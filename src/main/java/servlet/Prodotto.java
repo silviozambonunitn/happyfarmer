@@ -1,7 +1,7 @@
 package servlet;
 
 import java.util.ArrayList;
-import javafx.scene.image.Image;
+//import javafx.scene.image.Image;
 
 /**
  *
@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
 public class Prodotto {
     private int id;
     private String nome;
-    private Image image;
+    //private Image image;
     private float prezzo;
     private Categoria categoria;
     private boolean disponibilità;
@@ -40,13 +40,13 @@ public class Prodotto {
         this.nome = nome;
     }
 
-    public Image getImage() {
+    /*public Image getImage() {
         return image;
     }
 
     public void setImage(Image image) {
         this.image = image;
-    }
+    }*/
 
     public float getPrezzo() {
         return prezzo;
