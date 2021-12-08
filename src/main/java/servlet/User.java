@@ -19,5 +19,4 @@ public abstract class User {
     protected String userId;
     protected String password;      //Inserire campo di conferma nel modulo. Nel caso doppia registrazione le password devono essere diverse
     
-    
 }
