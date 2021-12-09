@@ -1,14 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package servlet;
+
+import java.util.ArrayList;
 
 /**
  *
  * @author Silvio
  */
 public class Produttore {
+    private String ragioneSociale;
+    private ContoVirtuale conto;
     
+    //Da appoggio per query db, credo
+    private ArrayList<Prodotto> ordini; //Distinguere tra da ritirare e vecchi?
 }
