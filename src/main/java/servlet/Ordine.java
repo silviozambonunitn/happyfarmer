@@ -6,7 +6,8 @@ import java.util.ArrayList;
  *
  * @author Silvio
  */
-public class Ordine extends User{
+public class Ordine extends User {
+
     private int id; //O String? Se serve per mongodb
     private ArrayList<Prodotto> prodotti;
     private float totale;
@@ -16,20 +17,30 @@ public class Ordine extends User{
     //Valutare correttezza!
     private Consumatore consumatore;
     private Produttore produttore;
-    
-    public float calcolaPrezzo(){
-        return -1;
+    private Pagamento pagamento;
+
+    public float calcolaPrezzo() {
+        int tot = 0;
+        for (int i = 0; i < prodotti.size(); i++) {
+            tot += prodotti.get(i).getPrezzo();
+        }
+        return tot;
     }
-    
-    boolean inserisciProdotto(Prodotto p, int quantità){
+
+    boolean inserisciProdotto(Prodotto p, int quantità) {
+        //come gestire la quantità?
+        return false;
+    }
+
+    boolean modificaQuantità(Prodotto p, int nuovaQuantità) {
+        return false;
+    }
+
+    boolean rimuoviProdotto(Prodotto p) {
         return false;
     }
     
-    boolean modificaQuantità(Prodotto p, int nuovaQuantità){
-        return false;
-    }
-    
-    boolean rimuoviProdotto(Prodotto p){
+    boolean tentaPagamento(){
         return false;
     }
 }

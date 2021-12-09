@@ -12,18 +12,26 @@ public class Prodotto {
     private String nome;
     //private Image image;
     private float prezzo;
-    private Categoria categoria;
+    private String categoria; //Implementare enum Categoria adattando controlli in doGet
     private boolean disponibilità;
     private ArrayList<String> certificazioni;
     private ArrayList<Recensione> recensioni;
     private int minQuantity;
 
-    /**
-     * id dovrebbe essere fornito dal db
-     */
-    public Prodotto() {
+    public Prodotto(int id) {
     }
 
+    public Prodotto(int id, String nome, float prezzo, String categoria, boolean disponibilità, ArrayList<String> certificazioni, ArrayList<Recensione> recensioni, int minQuantity) {
+        this.id = id;
+        this.nome = nome;
+        this.prezzo = prezzo;
+        this.categoria = categoria;
+        this.disponibilità = disponibilità;
+        this.certificazioni = certificazioni;
+        this.recensioni = recensioni;
+        this.minQuantity = minQuantity;
+    }
+    
     public int getId() {
         return id;
     }
@@ -56,11 +64,11 @@ public class Prodotto {
         this.prezzo = prezzo;
     }
 
-    public Categoria getCategoria() {
+    public String getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(Categoria categoria) {
+    public void setCategoria(String categoria) {
         this.categoria = categoria;
     }
 
