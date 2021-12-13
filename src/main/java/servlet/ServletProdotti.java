@@ -157,13 +157,28 @@ public class ServletProdotti extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "The server was unable to parse the Json object you uploaded");
             }
         } else {
-            String errMessage = "Please use /contacts/contactId to commit a change to a contact, where contactId is a positive integer identifying an existing contact";
+            String errMessage = "Usa /prodotti/productId per effettuare modifiche ad un prodotto, dove productId è un intero positivo identificante un prodotto esistente";
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, errMessage); //Code 400
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        String requested = req.getPathInfo();
+        if (requested == null || requested.equals("/")) {
+            resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED); //Code 405 https://restfulapi.net/http-methods/
+        } else if (requested.matches("/[0-9]+$")) {
+            long key = Long.parseLong(requested.split("/")[1]);
+            synchronized (this) {
+                if (prodotti.remove(key) == null) {
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che hai richiesto di eliminare non esiste"); //Code 404
+                } else {
+                    resp.setStatus(HttpServletResponse.SC_OK); //Code 200 https://restfulapi.net/http-methods/
+                }
+            }
+        } else {
+            String errMessage = "Usa /prodotti/productId per eliminare un prodotto, dove productId è un intero positivo identificante un prodotto esistente";
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, errMessage); //Code 400
+        }
     }
 }
