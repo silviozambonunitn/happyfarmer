@@ -126,7 +126,40 @@ public class ServletProdotti extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        String requested = req.getPathInfo();
+        if (requested == null || requested.equals("/")) {
+            resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED); //Code 405 https://restfulapi.net/http-methods/#put
+        } else if (requested.matches("/[0-9]+$")) {
+            long key = Long.parseLong(requested.split("/")[1]);
+            StringBuilder received = new StringBuilder();
+            String line;
+            BufferedReader reader = req.getReader();
+            while ((line = reader.readLine()) != null) {
+                received.append(line);
+            }
+            try {
+                JSONObject newJsonProduct = new JSONObject(received.toString());
+                Prodotto newProduct = new Prodotto(
+                        id, //Prende l'id dell'hashmap
+                        newJsonProduct.getString("nome"),
+                        newJsonProduct.getFloat("prezzo"),
+                        newJsonProduct.getString("categoria"),
+                        newJsonProduct.getBoolean("disponibile"),
+                        newJsonProduct.getInt("minQuantity"));
+                synchronized (this) { //Da migliorare (tanto codice nel blocco sync), ma non sono riuscito a pensare di meglio
+                    if (prodotti.replace(key, newProduct) == null) {
+                        resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che ha richiesto di modificare non esiste"); //Code 404
+                    } else {
+                        resp.setStatus(HttpServletResponse.SC_OK); //Code 200 https://restfulapi.net/http-methods/#put
+                    }
+                }
+            } catch (JSONException e) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "The server was unable to parse the Json object you uploaded");
+            }
+        } else {
+            String errMessage = "Please use /contacts/contactId to commit a change to a contact, where contactId is a positive integer identifying an existing contact";
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, errMessage); //Code 400
+        }
     }
 
     @Override
