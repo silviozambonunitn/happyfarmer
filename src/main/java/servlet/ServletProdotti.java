@@ -105,7 +105,7 @@ public class ServletProdotti extends HttpServlet {
             try {
                 JSONObject newJsonProduct = new JSONObject(received.toString());
                 Prodotto newProduct = new Prodotto(
-                        newJsonProduct.getInt("id"),
+                        id, //Prende l'id dell'hashmap
                         newJsonProduct.getString("nome"),
                         newJsonProduct.getFloat("prezzo"),
                         newJsonProduct.getString("categoria"),

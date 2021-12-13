@@ -9,7 +9,8 @@ import java.util.Objects;
  * @author Silvio
  */
 public class Prodotto {
-    private int id;
+
+    private long id;
     private String nome;
     //private Image image;
     private float prezzo;
@@ -19,7 +20,7 @@ public class Prodotto {
     private ArrayList<Recensione> recensioni;
     private int minQuantity;
 
-    public Prodotto(int id, String nome, float prezzo, String categoria, boolean disponibilità, int minQuantity) {
+    public Prodotto(long id, String nome, float prezzo, String categoria, boolean disponibilità, int minQuantity) {
         this.id = id;
         this.nome = nome;
         this.prezzo = prezzo;
@@ -27,12 +28,12 @@ public class Prodotto {
         this.disponibilità = disponibilità;
         this.minQuantity = minQuantity;
     }
-    
-    public int getId() {
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -51,7 +52,6 @@ public class Prodotto {
     public void setImage(Image image) {
         this.image = image;
     }*/
-
     public float getPrezzo() {
         return prezzo;
     }
@@ -79,12 +79,12 @@ public class Prodotto {
     public ArrayList<String> getCertificazioni() {
         return certificazioni;
     }
-    
-    public boolean aggiungiCert(String c){
+
+    public boolean aggiungiCert(String c) {
         return false; //da implementare
     }
-    
-    public boolean aggiungiRec(Recensione r){
+
+    public boolean aggiungiRec(Recensione r) {
         return false; //da implementare
     }
 
@@ -103,9 +103,10 @@ public class Prodotto {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 23 * hash + this.id;
-        hash = 23 * hash + Objects.hashCode(this.nome);
-        hash = 23 * hash + Objects.hashCode(this.categoria);
+        hash = 43 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 43 * hash + Objects.hashCode(this.nome);
+        hash = 43 * hash + Float.floatToIntBits(this.prezzo);
+        hash = 43 * hash + Objects.hashCode(this.categoria);
         return hash;
     }
 
@@ -121,7 +122,9 @@ public class Prodotto {
             return false;
         }
         final Prodotto other = (Prodotto) obj;
-        return this.id == other.id;
+        if (this.id != other.id) {
+            return false;
+        }
+        return true;
     }
-    
 }
