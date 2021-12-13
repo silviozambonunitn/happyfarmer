@@ -1,5 +1,6 @@
 package servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -92,7 +94,34 @@ public class ServletProdotti extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        String requested = req.getPathInfo();
+        if (requested == null || requested.equals("/")) {
+            StringBuilder received = new StringBuilder();
+            String line;
+            BufferedReader reader = req.getReader();
+            while ((line = reader.readLine()) != null) {
+                received.append(line);
+            }
+            try {
+                JSONObject newJsonProduct = new JSONObject(received.toString());
+                Prodotto newProduct = new Prodotto(
+                        newJsonProduct.getInt("id"),
+                        newJsonProduct.getString("nome"),
+                        newJsonProduct.getFloat("prezzo"),
+                        newJsonProduct.getString("categoria"),
+                        newJsonProduct.getBoolean("disponibile"),
+                        newJsonProduct.getInt("minQuantity"));
+                synchronized (this) { //Sincronizzato, visto che legge gli attributi
+                    prodotti.put(id, newProduct);
+                }
+                resp.setStatus(HttpServletResponse.SC_CREATED); //Code 201
+                resp.setHeader("Location", req.getRequestURL().toString() + '/' + id++); //mostra dove è disponibile il prodotto
+            } catch (JSONException e) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "The server was unable to parse the Json object you uploaded");
+            }
+        } else {
+            resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "POST metod not allowed on single resources"); //Code 405
+        }
     }
 
     @Override

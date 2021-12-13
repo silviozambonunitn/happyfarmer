@@ -13,23 +13,18 @@ public class Prodotto {
     private String nome;
     //private Image image;
     private float prezzo;
-    private String categoria; //Implementare enum Categoria adattando controlli in doGet
+    private String categoria; //Implementare enum Categoria adattando controlli in doGet ServletProdotti
     private boolean disponibilità;
     private ArrayList<String> certificazioni;
     private ArrayList<Recensione> recensioni;
     private int minQuantity;
 
-    public Prodotto(int id) {
-    }
-
-    public Prodotto(int id, String nome, float prezzo, String categoria, boolean disponibilità, ArrayList<String> certificazioni, ArrayList<Recensione> recensioni, int minQuantity) {
+    public Prodotto(int id, String nome, float prezzo, String categoria, boolean disponibilità, int minQuantity) {
         this.id = id;
         this.nome = nome;
         this.prezzo = prezzo;
         this.categoria = categoria;
         this.disponibilità = disponibilità;
-        this.certificazioni = certificazioni;
-        this.recensioni = recensioni;
         this.minQuantity = minQuantity;
     }
     
@@ -73,7 +68,7 @@ public class Prodotto {
         this.categoria = categoria;
     }
 
-    public boolean isDisponibilità() {
+    public boolean isDisponibile() {
         return disponibilità;
     }
 
@@ -83,6 +78,14 @@ public class Prodotto {
 
     public ArrayList<String> getCertificazioni() {
         return certificazioni;
+    }
+    
+    public boolean aggiungiCert(Certificazione c){
+        return false; //da implementare
+    }
+    
+    public boolean aggiungiRec(Recensione r){
+        return false; //da implementare
     }
 
     public ArrayList<Recensione> getRecensioni() {
