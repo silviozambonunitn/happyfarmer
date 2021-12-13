@@ -1,6 +1,7 @@
 package servlet;
 
 import java.util.ArrayList;
+import java.util.Objects;
 //import javafx.scene.image.Image;
 
 /**
@@ -94,6 +95,33 @@ public class Prodotto {
 
     public void setMinQuantity(int minQuantity) {
         this.minQuantity = minQuantity;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + this.id;
+        hash = 23 * hash + Objects.hashCode(this.nome);
+        hash = 23 * hash + Objects.hashCode(this.categoria);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Prodotto other = (Prodotto) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        return true;
     }
     
 }
