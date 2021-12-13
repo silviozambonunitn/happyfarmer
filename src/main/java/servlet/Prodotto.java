@@ -80,7 +80,7 @@ public class Prodotto {
         return certificazioni;
     }
     
-    public boolean aggiungiCert(Certificazione c){
+    public boolean aggiungiCert(String c){
         return false; //da implementare
     }
     
@@ -121,10 +121,7 @@ public class Prodotto {
             return false;
         }
         final Prodotto other = (Prodotto) obj;
-        if (this.id != other.id) {
-            return false;
-        }
-        return true;
+        return this.id == other.id;
     }
     
 }
