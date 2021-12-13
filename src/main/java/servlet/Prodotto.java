@@ -19,6 +19,7 @@ public class Prodotto {
     private ArrayList<String> certificazioni;
     private ArrayList<Recensione> recensioni;
     private int minQuantity;
+    private float mediaQP;
 
     public Prodotto(long id, String nome, float prezzo, String categoria, boolean disponibilità, int minQuantity) {
         this.id = id;
@@ -98,6 +99,15 @@ public class Prodotto {
 
     public void setMinQuantity(int minQuantity) {
         this.minQuantity = minQuantity;
+    }
+
+    public float getMediaQP() {
+        float sum = 0;
+        for (int i = 0; i < recensioni.size(); i++) {
+            sum += recensioni.get(i).getQualitàPrezzo();
+        }
+        this.mediaQP = sum / recensioni.size();
+        return mediaQP;
     }
 
     @Override
