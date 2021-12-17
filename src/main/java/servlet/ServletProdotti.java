@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.bson.Document;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 /**
  *
@@ -59,7 +60,7 @@ public class ServletProdotti extends HttpServlet {
                     exportBuf.put(i, prodotto);
                 }
             }
-            out.print(new JSONObject(exportBuf).toString());
+            out.print(new JSONArray(exportBuf).toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (neededCategory == null && searchBy != null) {
             //Ritorno i prodotti il cui nome contiene la stringa richiesta, json vuoto nel caso non esistano matches
@@ -70,7 +71,7 @@ public class ServletProdotti extends HttpServlet {
                     exportBuf.put(i, prodotto);
                 }
             }
-            out.print(new JSONObject(exportBuf).toString());
+            out.print(new JSONArray(exportBuf).toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (neededCategory != null && searchBy != null) {
             //Ritorno i prodotti filtrati attraverso entrambi i filtri precendenti
@@ -83,18 +84,18 @@ public class ServletProdotti extends HttpServlet {
                     }
                 }
             }
-            out.print(new JSONObject(exportBuf).toString());
+            out.print(new JSONArray(exportBuf).toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (requested == null || requested.equals("/")) {
             //Ritorno tutti i prodotti
-            JSONObject export = new JSONObject(prodotti);
+            JSONArray export = new JSONArray(prodotti);
             out.print(export.toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (requested.matches("/[0-9]+$")) { //Java REGEX ('/' seguito da qualsiasi numero positivo intero lungo quanto si vuole)
             //Fornisco il prodotto richiesto
             long key = Long.parseLong(requested.split("/")[1]);
             try {
-                JSONObject export = new JSONObject(prodotti.get(key));
+                JSONArray export = new JSONArray(prodotti.get(key));
                 out.print(export.toString());
                 resp.setHeader("Content-Type", "application/json;charset=utf-8");
             } catch (NullPointerException e) {
