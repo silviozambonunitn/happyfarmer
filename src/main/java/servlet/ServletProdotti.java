@@ -31,16 +31,16 @@ public class ServletProdotti extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        mongoClient = new MongoClient("mongodb+srv://sz:sz@happyfarmerdb.v8oyl.mongodb.net/test?authSource=admin&replicaSet=atlas-shcncz-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true");
+        /*mongoClient = new MongoClient("mongodb+srv://sz:sz@happyfarmerdb.v8oyl.mongodb.net/test?authSource=admin&replicaSet=atlas-shcncz-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true");
         db = mongoClient.getDatabase("happyfarmerdb");
         collProd = db.getCollection("prodotti");
         if (collProd.countDocuments() > 0) {
             //Prendi prodotti e inseriscili nella hashmap
             Document buff;
-        } else {
+        } else {*/
             prodotti = new HashMap<>();
             id = 0;
-        }
+        //}
     }
 
     @Override
@@ -198,12 +198,12 @@ public class ServletProdotti extends HttpServlet {
         }
     }
 
-    @Override
+    /*@Override
     public void destroy() {
         if(!prodotti.isEmpty()){
             //Aggiorna prodotti nel db
         }
         mongoClient.close();
-    }
+    }*/
 
 }
