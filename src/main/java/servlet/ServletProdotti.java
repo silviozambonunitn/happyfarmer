@@ -34,7 +34,6 @@ public class ServletProdotti extends HttpServlet {
     private HashMap<Long, Prodotto> prodotti;
     private long id;
     MongoCollection<Prodotto> collProd;
-    
 
     @Override
     public void init() throws ServletException {
@@ -50,6 +49,8 @@ public class ServletProdotti extends HttpServlet {
             collProd = db.getCollection("prodotti", Prodotto.class);
             System.out.println("Success!!\n");
         }
+        prodotti = new HashMap<>();
+        id = 0;
     }
 
     @Override
@@ -215,6 +216,6 @@ public class ServletProdotti extends HttpServlet {
 
     @Override
     public void destroy() {
-        
+
     }
 }
