@@ -60,6 +60,7 @@ public class ServletProdotti extends HttpServlet {
             }
             out.print(new JSONObject(exportBuf).toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
+            resp.setHeader("Access-Control-Allow-Origin", "*");
         } else if (neededCategory == null && searchBy != null) {
             //Ritorno i prodotti il cui nome contiene la stringa richiesta, json vuoto nel caso non esistano matches
             Prodotto prodotto;
