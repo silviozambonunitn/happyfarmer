@@ -7,8 +7,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.annotation.WebServlet;
@@ -90,8 +88,10 @@ public class ServletProdotti extends HttpServlet {
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (requested == null || requested.equals("/")) {
             //Ritorno tutti i prodotti, TESTARE
-            Set<Map.Entry<Long, Prodotto>> entries = prodotti.entrySet();
-            JSONArray export = new JSONArray(entries);
+            JSONArray export = new JSONArray();
+            for (long i = 0; i < id; i++) {
+                export.put(prodotti.get(i));
+            }
             out.print(export.toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (requested.matches("/[0-9]+$")) { //Java REGEX ('/' seguito da qualsiasi numero positivo intero lungo quanto si vuole)
