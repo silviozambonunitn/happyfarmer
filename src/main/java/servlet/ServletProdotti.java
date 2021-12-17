@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.annotation.WebServlet;
@@ -39,36 +41,36 @@ public class ServletProdotti extends HttpServlet {
             //Prendi prodotti e inseriscili nella hashmap
             Document buff;
         } else {*/
-            prodotti = new HashMap<>();
-            id = 0;
+        prodotti = new HashMap<>();
+        id = 0;
         //}
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
-        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Origin", "*"); //CORS
         String requested = req.getPathInfo();
         String neededCategory = req.getParameter("category");
         String searchBy = req.getParameter("name");
         if (neededCategory != null && searchBy == null) {
             //Ritorno i prodotti filtrati per la categoria richiesta, json vuoto nel caso non esistano matches
             Prodotto prodotto;
-            HashMap<Long, Prodotto> exportBuf = new HashMap<>();
+            JSONArray exportBuf = new JSONArray();
             for (long i = 0; i < id; i++) { //Non esiste foreach per Map
                 if ((prodotto = prodotti.get(i)) != null && prodotto.getCategoria().equals(neededCategory)) {
-                    exportBuf.put(i, prodotto);
+                    exportBuf.put(prodotto);
                 }
             }
-            out.print(new JSONArray(exportBuf).toString());
+            out.print(exportBuf.toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (neededCategory == null && searchBy != null) {
             //Ritorno i prodotti il cui nome contiene la stringa richiesta, json vuoto nel caso non esistano matches
             Prodotto prodotto;
-            HashMap<Long, Prodotto> exportBuf = new HashMap<>();
+            JSONArray exportBuf = new JSONArray();
             for (long i = 0; i < id; i++) {
                 if ((prodotto = prodotti.get(i)) != null && prodotto.getNome().toLowerCase().contains(searchBy.toLowerCase())) {
-                    exportBuf.put(i, prodotto);
+                    exportBuf.put(prodotto);
                 }
             }
             out.print(new JSONArray(exportBuf).toString());
@@ -76,26 +78,27 @@ public class ServletProdotti extends HttpServlet {
         } else if (neededCategory != null && searchBy != null) {
             //Ritorno i prodotti filtrati attraverso entrambi i filtri precendenti
             Prodotto prodotto;
-            HashMap<Long, Prodotto> exportBuf = new HashMap<>();
+            JSONArray exportBuf = new JSONArray();
             for (long i = 0; i < id; i++) {
                 if ((prodotto = prodotti.get(i)) != null) {
                     if (prodotto.getNome().toLowerCase().contains(searchBy.toLowerCase()) && prodotto.getCategoria().equals(neededCategory)) {
-                        exportBuf.put(i, prodotto);
+                        exportBuf.put(prodotto);
                     }
                 }
             }
             out.print(new JSONArray(exportBuf).toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (requested == null || requested.equals("/")) {
-            //Ritorno tutti i prodotti
-            JSONArray export = new JSONArray(prodotti);
+            //Ritorno tutti i prodotti, TESTARE
+            Set<Map.Entry<Long, Prodotto>> entries = prodotti.entrySet();
+            JSONArray export = new JSONArray(entries);
             out.print(export.toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (requested.matches("/[0-9]+$")) { //Java REGEX ('/' seguito da qualsiasi numero positivo intero lungo quanto si vuole)
             //Fornisco il prodotto richiesto
             long key = Long.parseLong(requested.split("/")[1]);
             try {
-                JSONArray export = new JSONArray(prodotti.get(key));
+                JSONObject export = new JSONObject(prodotti.get(key));
                 out.print(export.toString());
                 resp.setHeader("Content-Type", "application/json;charset=utf-8");
             } catch (NullPointerException e) {
@@ -123,7 +126,7 @@ public class ServletProdotti extends HttpServlet {
             try {
                 JSONObject newJsonProduct = new JSONObject(received.toString());
                 Prodotto newProduct = new Prodotto(
-                        id, //Prende l'id dell'hashmap
+                        this.id, //Prende l'id dell'hashmap
                         newJsonProduct.getString("nome"),
                         newJsonProduct.getFloat("prezzo"),
                         newJsonProduct.getString("categoria"),
@@ -209,5 +212,4 @@ public class ServletProdotti extends HttpServlet {
         }
         mongoClient.close();
     }*/
-
 }
