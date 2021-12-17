@@ -90,7 +90,7 @@ public class ServletProdotti extends HttpServlet {
             //Ritorno tutti i prodotti, TESTARE
             JSONArray export = new JSONArray();
             for (long i = 0; i < id; i++) {
-                export.put(prodotti.get(i));
+                export.put(new JSONObject(prodotti.get(i)));
             }
             out.print(export.toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
