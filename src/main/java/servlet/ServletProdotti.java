@@ -1,6 +1,9 @@
 package servlet;
 
-import com.mongodb.MongoClient;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.io.BufferedReader;
@@ -12,10 +15,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
+
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 /**
  *
@@ -26,22 +33,23 @@ public class ServletProdotti extends HttpServlet {
 
     private HashMap<Long, Prodotto> prodotti;
     private long id;
-    private MongoClient mongoClient;
-    private MongoDatabase db;
-    private MongoCollection collProd;
+    MongoCollection<Prodotto> collProd;
+    
 
     @Override
     public void init() throws ServletException {
-        /*mongoClient = new MongoClient("mongodb+srv://sz:sz@happyfarmerdb.v8oyl.mongodb.net/test?authSource=admin&replicaSet=atlas-shcncz-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true");
-        db = mongoClient.getDatabase("happyfarmerdb");
-        collProd = db.getCollection("prodotti");
-        if (collProd.countDocuments() > 0) {
-            //Prendi prodotti e inseriscili nella hashmap
-            Document buff;
-        } else {*/
-        prodotti = new HashMap<>();
-        id = 0;
-        //}
+        ConnectionString connectionString = new ConnectionString("mongodb+srv://sz:sz@happyfarmerdb.v8oyl.mongodb.net/test?authSource=admin&replicaSet=atlas-shcncz-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true");
+        CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
+        CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
+        MongoClientSettings clientSettings = MongoClientSettings.builder()
+                .applyConnectionString(connectionString)
+                .codecRegistry(codecRegistry)
+                .build();
+        try (MongoClient mongoClient = MongoClients.create(clientSettings)) {
+            MongoDatabase db = mongoClient.getDatabase("happyfarmerdb");
+            collProd = db.getCollection("prodotti", Prodotto.class);
+            System.out.println("Success!!\n");
+        }
     }
 
     @Override
@@ -205,11 +213,8 @@ public class ServletProdotti extends HttpServlet {
         }
     }
 
-    /*@Override
+    @Override
     public void destroy() {
-        if(!prodotti.isEmpty()){
-            //Aggiorna prodotti nel db
-        }
-        mongoClient.close();
-    }*/
+        
+    }
 }
