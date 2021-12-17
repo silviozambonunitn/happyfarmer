@@ -46,6 +46,7 @@ public class ServletProdotti extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
+        resp.setHeader("Access-Control-Allow-Origin", "*");
         String requested = req.getPathInfo();
         String neededCategory = req.getParameter("category");
         String searchBy = req.getParameter("name");
@@ -60,7 +61,6 @@ public class ServletProdotti extends HttpServlet {
             }
             out.print(new JSONObject(exportBuf).toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
-            resp.setHeader("Access-Control-Allow-Origin", "*");
         } else if (neededCategory == null && searchBy != null) {
             //Ritorno i prodotti il cui nome contiene la stringa richiesta, json vuoto nel caso non esistano matches
             Prodotto prodotto;
@@ -111,6 +111,7 @@ public class ServletProdotti extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String requested = req.getPathInfo();
+        resp.setHeader("Access-Control-Allow-Origin", "*");
         if (requested == null || requested.equals("/")) {
             StringBuilder received = new StringBuilder();
             String line;
@@ -142,6 +143,7 @@ public class ServletProdotti extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setHeader("Access-Control-Allow-Origin", "*");
         String requested = req.getPathInfo();
         if (requested == null || requested.equals("/")) {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED); //Code 405 https://restfulapi.net/http-methods/#put
@@ -180,6 +182,7 @@ public class ServletProdotti extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setHeader("Access-Control-Allow-Origin", "*");
         String requested = req.getPathInfo();
         if (requested == null || requested.equals("/")) {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED); //Code 405 https://restfulapi.net/http-methods/
