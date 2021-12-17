@@ -1,5 +1,8 @@
 package servlet;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.bson.Document;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,11 +25,22 @@ public class ServletProdotti extends HttpServlet {
 
     private HashMap<Long, Prodotto> prodotti;
     private long id;
+    private MongoClient mongoClient;
+    private MongoDatabase db;
+    private MongoCollection collProd;
 
     @Override
     public void init() throws ServletException {
-        prodotti = new HashMap<>();
-        id = 0;
+        mongoClient = new MongoClient("mongodb+srv://sz:sz@happyfarmerdb.v8oyl.mongodb.net/test?authSource=admin&replicaSet=atlas-shcncz-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true");
+        db = mongoClient.getDatabase("happyfarmerdb");
+        collProd = db.getCollection("prodotti");
+        if (collProd.countDocuments() > 0) {
+            //Prendi prodotti e inseriscili nella hashmap
+            Document buff;
+        } else {
+            prodotti = new HashMap<>();
+            id = 0;
+        }
     }
 
     @Override
@@ -181,4 +196,13 @@ public class ServletProdotti extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, errMessage); //Code 400
         }
     }
+
+    @Override
+    public void destroy() {
+        if(!prodotti.isEmpty()){
+            //Aggiorna prodotti nel db
+        }
+        mongoClient.close();
+    }
+
 }
