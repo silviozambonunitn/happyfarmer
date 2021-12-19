@@ -31,6 +31,8 @@ public class ServletProdotti extends HttpServlet {
 
     //private HashMap<ObjectId, Prodotto> prodotti;
     //private long numProd;
+    private MongoClient mongoClient;
+    private MongoDatabase db;
     private MongoCollection<Prodotto> collProd;
 
     @Override
@@ -42,11 +44,11 @@ public class ServletProdotti extends HttpServlet {
                 .applyConnectionString(connectionString)
                 .codecRegistry(codecRegistry)
                 .build();
-        try (MongoClient mongoClient = MongoClients.create(clientSettings)) {
-            MongoDatabase db = mongoClient.getDatabase("happyfarmerdb");
-            collProd = db.getCollection("prodotti", Prodotto.class);
-            System.out.println("Init eseguito con successo!");
-        }
+        //try with res
+        mongoClient = MongoClients.create(clientSettings);
+        db = mongoClient.getDatabase("happyfarmerdb");
+        collProd = db.getCollection("prodotti", Prodotto.class);
+        System.out.println("Init eseguito con successo!");
         //prodotti = new HashMap<>();
         //numProd = 0;
     }
@@ -101,7 +103,7 @@ public class ServletProdotti extends HttpServlet {
                 }
             }
             out.print(new JSONArray(exportBuf).toString());*/
-            MongoCursor<Prodotto> cursore = collProd.find(and(eq("nome", searchBy),eq("categoria", neededCategory))).cursor();
+            MongoCursor<Prodotto> cursore = collProd.find(and(eq("nome", searchBy), eq("categoria", neededCategory))).cursor();
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
             }
@@ -118,13 +120,13 @@ public class ServletProdotti extends HttpServlet {
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
             }
-            out.print(exportBuf.toString());            
+            out.print(exportBuf.toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (ObjectId.isValid(requested.split("/")[1])) { //Java REGEX ('/' seguito da qualsiasi numero positivo intero lungo quanto si vuole)
             //Fornisco il prodotto richiesto
             ObjectId key = new ObjectId(requested.split("/")[1]);
             try {
-                JSONObject export = new JSONObject(/*prodotti.get(key)*/collProd.find(eq("_id",key)).first());
+                JSONObject export = new JSONObject(/*prodotti.get(key)*/collProd.find(eq("_id", key)).first());
                 out.print(export.toString());
                 resp.setHeader("Content-Type", "application/json;charset=utf-8");
             } catch (NullPointerException e) { //Modificare exception
@@ -198,8 +200,8 @@ public class ServletProdotti extends HttpServlet {
                     /*if (prodotti.replace(key, newProduct) == null) {
                         resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che ha richiesto di modificare non esiste"); //Code 404
                     } else {*/
-                        collProd.findOneAndReplace(eq("_id", key), newProduct);
-                        resp.setStatus(HttpServletResponse.SC_OK); //Code 200 https://restfulapi.net/http-methods/#put
+                    collProd.findOneAndReplace(eq("_id", key), newProduct);
+                    resp.setStatus(HttpServletResponse.SC_OK); //Code 200 https://restfulapi.net/http-methods/#put
                     //}
                 }
             } catch (JSONException e) {
@@ -223,8 +225,8 @@ public class ServletProdotti extends HttpServlet {
                 /*if (prodotti.remove(key) == null) {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che hai richiesto di eliminare non esiste"); //Code 404
                 } else {*/
-                    collProd.findOneAndDelete(eq("_id", key));
-                    resp.setStatus(HttpServletResponse.SC_OK); //Code 200 https://restfulapi.net/http-methods/
+                collProd.findOneAndDelete(eq("_id", key));
+                resp.setStatus(HttpServletResponse.SC_OK); //Code 200 https://restfulapi.net/http-methods/
                 //}
             }
         } else {
@@ -233,8 +235,4 @@ public class ServletProdotti extends HttpServlet {
         }
     }
 
-    @Override
-    public void destroy() {
-
-    }
 }
