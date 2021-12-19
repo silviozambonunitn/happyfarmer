@@ -2,6 +2,8 @@ package servlet;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import org.bson.codecs.pojo.annotations.*;
+import org.bson.types.ObjectId;
 //import javafx.scene.image.Image;
 
 /**
@@ -10,7 +12,8 @@ import java.util.Objects;
  */
 public class Prodotto {
 
-    private long id;
+    @BsonId
+    private ObjectId id;
     private String nome;
     //private Image image;
     private float prezzo;
@@ -21,8 +24,12 @@ public class Prodotto {
     private int minQuantity;
     private float mediaQP;
 
-    public Prodotto(long id, String nome, float prezzo, String categoria, boolean disponibilità, int minQuantity) {
-        this.id = id;
+    public Prodotto(@BsonProperty("nome") String nome,
+            @BsonProperty("prezzo") float prezzo,
+            @BsonProperty("categoria") String categoria,
+            @BsonProperty("disponibilità") boolean disponibilità,
+            @BsonProperty("minQuantity") int minQuantity) {
+        this.id = new ObjectId();
         this.nome = nome;
         this.prezzo = prezzo;
         this.categoria = categoria;
@@ -30,11 +37,11 @@ public class Prodotto {
         this.minQuantity = minQuantity;
     }
 
-    public long getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 
@@ -46,13 +53,6 @@ public class Prodotto {
         this.nome = nome;
     }
 
-    /*public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
-    }*/
     public float getPrezzo() {
         return prezzo;
     }
@@ -82,11 +82,11 @@ public class Prodotto {
     }
 
     public boolean aggiungiCert(String c) {
-        return false; //da implementare
+        return certificazioni.add(c);
     }
 
     public boolean aggiungiRec(Recensione r) {
-        return false; //da implementare
+        return recensioni.add(r);
     }
 
     public ArrayList<Recensione> getRecensioni() {
@@ -113,10 +113,10 @@ public class Prodotto {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 43 * hash + (int) (this.id ^ (this.id >>> 32));
-        hash = 43 * hash + Objects.hashCode(this.nome);
-        hash = 43 * hash + Float.floatToIntBits(this.prezzo);
-        hash = 43 * hash + Objects.hashCode(this.categoria);
+        hash = 29 * hash + Objects.hashCode(this.id);
+        hash = 29 * hash + Objects.hashCode(this.nome);
+        hash = 29 * hash + Float.floatToIntBits(this.prezzo);
+        hash = 29 * hash + Objects.hashCode(this.categoria);
         return hash;
     }
 
@@ -132,7 +132,13 @@ public class Prodotto {
             return false;
         }
         final Prodotto other = (Prodotto) obj;
-        if (this.id != other.id) {
+        if (Float.floatToIntBits(this.prezzo) != Float.floatToIntBits(other.prezzo)) {
+            return false;
+        }
+        if (!Objects.equals(this.nome, other.nome)) {
+            return false;
+        }
+        if (!Objects.equals(this.categoria, other.categoria)) {
             return false;
         }
         return true;
