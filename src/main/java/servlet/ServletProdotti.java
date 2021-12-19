@@ -164,7 +164,7 @@ public class ServletProdotti extends HttpServlet {
                     collProd.insertOne(newProduct);
                 }
                 resp.setStatus(HttpServletResponse.SC_CREATED); //Code 201 //O String normale??
-                resp.setHeader("Location", req.getRequestURL().toString() + '/' + newProduct.getId().toHexString()); //mostra dove è disponibile il prodotto
+                resp.setHeader("Location", req.getRequestURL().toString() + '/' + newProduct.getId()); //mostra dove è disponibile il prodotto
             } catch (JSONException e) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "The server was unable to parse the Json object you uploaded");
             }

@@ -30,7 +30,7 @@ public class Prodotto {
         recensioni=new ArrayList<>();
     }
     
-    //@BsonCreator
+    //@BsonCreator, le annotation sotto non sono usate
     public Prodotto(@BsonProperty("nome") String nome,
             @BsonProperty("prezzo") float prezzo,
             @BsonProperty("categoria") String categoria,
@@ -47,8 +47,8 @@ public class Prodotto {
         //mediaQP = 0;
     }
 
-    public ObjectId getId() {
-        return id;
+    public String getId() {
+        return id.toHexString();
     }
 
     public void setId(ObjectId id) {
