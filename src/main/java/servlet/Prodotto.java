@@ -22,7 +22,7 @@ public class Prodotto {
     private int minQuantity;
     private ArrayList<String> certificazioni;
     private ArrayList<Recensione> recensioni;
-    private float mediaQP;
+    //private float mediaQP;
 
     public Prodotto(@BsonProperty("nome") String nome,
             @BsonProperty("prezzo") float prezzo,
@@ -35,7 +35,9 @@ public class Prodotto {
         this.categoria = categoria;
         this.disponibilità = disponibilità;
         this.minQuantity = minQuantity;
-        mediaQP = 0;
+        certificazioni=new ArrayList<>();
+        recensioni=new ArrayList<>();
+        //mediaQP = 0;
     }
 
     public ObjectId getId() {
@@ -102,7 +104,7 @@ public class Prodotto {
         this.minQuantity = minQuantity;
     }
 
-    public float getMediaQP() {
+    /*public float getMediaQP() {
         if (recensioni.isEmpty()) {
             this.mediaQP = -1;
         } else {
@@ -113,7 +115,7 @@ public class Prodotto {
             this.mediaQP = sum / recensioni.size();
         }
         return mediaQP;
-    }
+    }*/
 
     @Override
     public int hashCode() {
