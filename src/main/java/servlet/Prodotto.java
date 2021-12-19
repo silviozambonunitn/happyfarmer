@@ -24,13 +24,19 @@ public class Prodotto {
     private ArrayList<Recensione> recensioni;
     //private float mediaQP;
 
-    @BsonCreator
+    public Prodotto() {
+        id = new ObjectId();
+        certificazioni=new ArrayList<>();
+        recensioni=new ArrayList<>();
+    }
+    
+    //@BsonCreator
     public Prodotto(@BsonProperty("nome") String nome,
             @BsonProperty("prezzo") float prezzo,
             @BsonProperty("categoria") String categoria,
             @BsonProperty("disponibilità") boolean disponibilità,
             @BsonProperty("minQuantity") int minQuantity) {
-        this.id = new ObjectId();
+        id = new ObjectId();
         this.nome = nome;
         this.prezzo = prezzo;
         this.categoria = categoria;
