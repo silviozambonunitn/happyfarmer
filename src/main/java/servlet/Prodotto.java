@@ -13,16 +13,16 @@ import org.bson.types.ObjectId;
 public class Prodotto {
 
     @BsonId
-    private ObjectId id;
-    private String nome;
+    public ObjectId id;
+    public String nome;
     //private Image image;
-    private float prezzo;
-    private String categoria; //Implementare enum Categoria adattando controlli in doGet ServletProdotti
-    private boolean disponibilità;
-    private ArrayList<String> certificazioni;
-    private ArrayList<Recensione> recensioni;
-    private int minQuantity;
-    private float mediaQP;
+    public float prezzo;
+    public String categoria; //Implementare enum Categoria adattando controlli in doGet ServletProdotti
+    public boolean disponibilità;
+    public ArrayList<String> certificazioni;
+    public ArrayList<Recensione> recensioni;
+    public int minQuantity;
+    public float mediaQP;
 
     public Prodotto(@BsonProperty("nome") String nome,
             @BsonProperty("prezzo") float prezzo,
