@@ -70,7 +70,7 @@ public class Prodotto {
         this.categoria = categoria;
     }
 
-    public boolean isDisponibile() {
+    public boolean isDisponibilità() {
         return disponibilità;
     }
 
