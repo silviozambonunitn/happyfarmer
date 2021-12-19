@@ -195,7 +195,7 @@ public class ServletProdotti extends HttpServlet {
                         newJsonProduct.getString("categoria"),
                         newJsonProduct.getBoolean("disponibile"),
                         newJsonProduct.getInt("minQuantity"));
-                newProduct.setId(key);
+                newProduct.setId(key.toHexString());
                 synchronized (this) { //Da migliorare (tanto codice nel blocco sync), ma non sono riuscito a pensare di meglio
                     /*if (prodotti.replace(key, newProduct) == null) {
                         resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che ha richiesto di modificare non esiste"); //Code 404

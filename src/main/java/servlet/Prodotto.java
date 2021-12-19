@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
 public class Prodotto {
 
     @BsonId
-    private ObjectId id;
+    private String id;
     private String nome;
     //private Image image;
     private float prezzo;
@@ -25,7 +25,7 @@ public class Prodotto {
     //private float mediaQP;
 
     public Prodotto() {
-        id = new ObjectId();
+        id = new ObjectId().toHexString();
         certificazioni=new ArrayList<>();
         recensioni=new ArrayList<>();
     }
@@ -36,7 +36,7 @@ public class Prodotto {
             @BsonProperty("categoria") String categoria,
             @BsonProperty("disponibilità") boolean disponibilità,
             @BsonProperty("minQuantity") int minQuantity) {
-        id = new ObjectId();
+        id = new ObjectId().toHexString();
         this.nome = nome;
         this.prezzo = prezzo;
         this.categoria = categoria;
@@ -48,10 +48,10 @@ public class Prodotto {
     }
 
     public String getId() {
-        return id.toHexString();
+        return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
