@@ -13,16 +13,16 @@ import org.bson.types.ObjectId;
 public class Prodotto {
 
     @BsonId
-    public ObjectId id;
-    public String nome;
+    private ObjectId id;
+    private String nome;
     //private Image image;
-    public float prezzo;
-    public String categoria; //Implementare enum Categoria adattando controlli in doGet ServletProdotti
-    public boolean disponibilità;
-    public ArrayList<String> certificazioni;
-    public ArrayList<Recensione> recensioni;
-    public int minQuantity;
-    public float mediaQP;
+    private float prezzo;
+    private String categoria; //Implementare enum Categoria adattando controlli in doGet ServletProdotti
+    private boolean disponibilità;
+    private int minQuantity;
+    private ArrayList<String> certificazioni;
+    private ArrayList<Recensione> recensioni;
+    private float mediaQP;
 
     public Prodotto(@BsonProperty("nome") String nome,
             @BsonProperty("prezzo") float prezzo,
@@ -35,6 +35,7 @@ public class Prodotto {
         this.categoria = categoria;
         this.disponibilità = disponibilità;
         this.minQuantity = minQuantity;
+        mediaQP = 0;
     }
 
     public ObjectId getId() {
@@ -102,11 +103,15 @@ public class Prodotto {
     }
 
     public float getMediaQP() {
-        float sum = 0;
-        for (int i = 0; i < recensioni.size(); i++) {
-            sum += recensioni.get(i).getQualitàPrezzo();
+        if (recensioni.isEmpty()) {
+            this.mediaQP = -1;
+        } else {
+            float sum = 0;
+            for (int i = 0; i < recensioni.size(); i++) {
+                sum += recensioni.get(i).getQualitàPrezzo();
+            }
+            this.mediaQP = sum / recensioni.size();
         }
-        this.mediaQP = sum / recensioni.size();
         return mediaQP;
     }
 
