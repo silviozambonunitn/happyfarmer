@@ -24,6 +24,7 @@ public class Prodotto {
     private ArrayList<Recensione> recensioni;
     //private float mediaQP;
 
+    @BsonCreator
     public Prodotto(@BsonProperty("nome") String nome,
             @BsonProperty("prezzo") float prezzo,
             @BsonProperty("categoria") String categoria,
