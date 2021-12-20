@@ -1,11 +1,16 @@
 package servlet;
 
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.types.ObjectId;
+
 /**
  *
  * @author silviozambonunitn, francescounitn
  */
 public abstract class User {
-    
+
+    @BsonId
+    private String id;
     private String name;
     private String surname;
     protected String email;         //Inserire campo di conferma nel modulo, caso doppia registrazione
@@ -13,6 +18,19 @@ public abstract class User {
     private String phoneNumber;   //Opzionale
     private String userId;
     protected String password;      //Inserire campo di conferma nel modulo. Nel caso doppia registrazione le password devono essere diverse
+
+    public User() {
+        id = new ObjectId().toHexString();
+        phoneNumber = null;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -69,5 +87,5 @@ public abstract class User {
     public void setPassword(String password) {
         this.password = password;
     }
-        
+
 }

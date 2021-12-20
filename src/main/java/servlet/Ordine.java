@@ -1,33 +1,48 @@
 package servlet;
 
 import java.util.ArrayList;
+import javafx.util.Pair;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.types.ObjectId;
 
 /**
  *
  * @author Silvio
  */
-public class Ordine extends User {
+public class Ordine {
 
-    private int id; //O String? Se serve per mongodb
-    private ArrayList<Prodotto> prodotti;
+    @BsonId
+    private String id;
     private float totale;
     private PuntoVendita puntoRitiro;
     //private Image qr;
     private boolean ritirato;
-    //Valutare correttezza!
     private Consumatore consumatore;
     private Produttore produttore;
     private Pagamento pagamento;
+    private ArrayList<Pair<Prodotto, Integer>> prodotti;
 
+    public Ordine() {
+        id = new ObjectId().toHexString();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+    
     public float calcolaPrezzo() {
         int tot = 0;
         for (int i = 0; i < prodotti.size(); i++) {
-            tot += prodotti.get(i).getPrezzo();
+            tot += prodotti.get(i).getKey().getPrezzo();
         }
         return tot;
     }
 
-    boolean inserisciProdotto(Prodotto p, int quantità) {
+    boolean aggiungiProdotto(Prodotto p, int quantità) {
         //come gestire la quantità?
         return false;
     }
@@ -39,8 +54,56 @@ public class Ordine extends User {
     boolean rimuoviProdotto(Prodotto p) {
         return false;
     }
-    
-    boolean tentaPagamento(){
+
+    boolean tentaPagamento() {
         return false;
+    }
+
+    public ArrayList<Prodotto> getProdotti() {
+        return null;
+    }
+
+    public float getTotale() {
+        return totale;
+    }
+
+    public PuntoVendita getPuntoRitiro() {
+        return puntoRitiro;
+    }
+
+    public void setPuntoRitiro(PuntoVendita puntoRitiro) {
+        this.puntoRitiro = puntoRitiro;
+    }
+
+    public boolean isRitirato() {
+        return ritirato;
+    }
+
+    public void setRitirato(boolean ritirato) {
+        this.ritirato = ritirato;
+    }
+
+    public Consumatore getConsumatore() {
+        return consumatore;
+    }
+
+    public void setConsumatore(Consumatore consumatore) {
+        this.consumatore = consumatore;
+    }
+
+    public Produttore getProduttore() {
+        return produttore;
+    }
+
+    public void setProduttore(Produttore produttore) {
+        this.produttore = produttore;
+    }
+
+    public Pagamento getPagamento() {
+        return pagamento;
+    }
+
+    public void setPagamento(Pagamento pagamento) {
+        this.pagamento = pagamento;
     }
 }

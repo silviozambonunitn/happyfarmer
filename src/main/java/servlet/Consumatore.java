@@ -6,8 +6,13 @@ import java.util.ArrayList;
  *
  * @author Silvio
  */
-public class Consumatore extends User{
+public class Consumatore extends User {
+
     //Da appoggio per query db, credo
-    private ArrayList<Prodotto> ordini; //Distinguere tra da ritirare e vecchi?
-    
+    private ArrayList<Ordine> ordini; //Distinguere tra da ritirare e vecchi?
+
+    public Consumatore() {
+        super();
+        ordini = new ArrayList<>();
+    }
 }
