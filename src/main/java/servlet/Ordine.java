@@ -1,7 +1,6 @@
 package servlet;
 
 import java.util.ArrayList;
-import javafx.util.Pair;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 
@@ -15,15 +14,16 @@ public class Ordine {
     private String id;
     private float totale;
     private PuntoVendita puntoRitiro;
-    //private Image qr;
+    //QR code
     private boolean ritirato;
     private Consumatore consumatore;
     private Produttore produttore;
     private Pagamento pagamento;
-    private ArrayList<Pair<Prodotto, Integer>> prodotti;
+    private ArrayList<ProductEntry> prodotti;
 
     public Ordine() {
         id = new ObjectId().toHexString();
+        prodotti = new ArrayList<>();
     }
 
     public String getId() {
@@ -33,11 +33,11 @@ public class Ordine {
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public float calcolaPrezzo() {
         int tot = 0;
         for (int i = 0; i < prodotti.size(); i++) {
-            tot += prodotti.get(i).getKey().getPrezzo();
+            tot += prodotti.get(i).getProdotto().getPrezzo();
         }
         return tot;
     }
