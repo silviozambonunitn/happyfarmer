@@ -5,13 +5,13 @@ package servlet;
  * @author Silvio
  */
 public class Recensione {
-    private Consumatore autore;
+    private String autore;
     private int qualità;
     private int freschezza;
     private int cordialità;
     private int qualitàPrezzo;
 
-    public Recensione(Consumatore autore, int qualità, int freschezza, int cordialità, int qualitàPrezzo) {
+    public Recensione(String autore, int qualità, int freschezza, int cordialità, int qualitàPrezzo) {
         this.autore = autore;
         this.qualità = qualità;
         this.freschezza = freschezza;
@@ -19,11 +19,11 @@ public class Recensione {
         this.qualitàPrezzo = qualitàPrezzo;
     }
 
-    public Consumatore getAutore() {
+    public String getAutore() {
         return autore;
     }
 
-    public void setAutore(Consumatore autore) {
+    public void setAutore(String autore) {
         this.autore = autore;
     }
 
