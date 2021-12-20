@@ -56,6 +56,13 @@
             <artifactId>mongodb-driver-sync</artifactId>
             <version>4.4.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-base -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>18-ea+8</version>
+        </dependency>
+
     </dependencies>
     <build>
         <finalName>embeddedTomcatSample</finalName>
