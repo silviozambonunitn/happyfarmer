@@ -2,6 +2,7 @@ package servlet;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoException;
 import com.mongodb.client.*;
 import org.bson.types.ObjectId;
 import static com.mongodb.client.model.Filters.*;
@@ -42,17 +43,16 @@ public class ServletProdotti extends HttpServlet {
                 .applyConnectionString(connectionString)
                 .codecRegistry(codecRegistry)
                 .build();
-        //try with res
         mongoClient = MongoClients.create(clientSettings);
         db = mongoClient.getDatabase("happyfarmerdb");
         collProd = db.getCollection("prodotti", Prodotto.class);
-        System.out.println("Init eseguito con successo!");
+        System.out.println("Connessione con MongoDB eseguita con successo!");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
-        resp.setHeader("Access-Control-Allow-Origin", "*"); //CORS
+        resp.setHeader("Access-Control-Allow-Origin", "*"); //CORS required
         String requested = req.getPathInfo();
         String neededCategory = req.getParameter("category");
         String searchBy = req.getParameter("name");
@@ -92,20 +92,18 @@ public class ServletProdotti extends HttpServlet {
             }
             out.print(exportBuf.toString());
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
-        } else if (ObjectId.isValid(requested.split("/")[1])) { //Java REGEX ('/' seguito da qualsiasi numero positivo intero lungo quanto si vuole)
+        } else if (ObjectId.isValid(requested.split("/")[1])) {
             //Fornisco il prodotto richiesto
-            //ObjectId key = new ObjectId(requested.split("/")[1]);
-            String key=requested.split("/")[1];
+            String key = requested.split("/")[1];
             try {
-                JSONObject export = new JSONObject(collProd.find(eq("_id", key)).first());
-                out.print(export.toString());
+                out.print(new JSONObject(collProd.find(eq("_id", key)).first()).toString());
                 resp.setHeader("Content-Type", "application/json;charset=utf-8");
             } catch (NullPointerException e) { //Modificare exception
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto richiesto non esiste"); //Code 404
             }
         } else {
             String errMessage = "Si prega di usare /prodotti o /prodotti/ per richiedere tutti i prodotti, /prodotti/idProdotto per richiedere un prodotto,"
-                    + "dove idProdotto è un intero positivo identificante un prodotto già presente";
+                    + "dove idProdotto è una stringa identificante un prodotto già presente";
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, errMessage); //Code 400
         }
         out.close();
@@ -130,16 +128,18 @@ public class ServletProdotti extends HttpServlet {
                         newJsonProduct.getString("categoria"),
                         newJsonProduct.getBoolean("disponibile"),
                         newJsonProduct.getInt("minQuantity"));
-                synchronized (this) { //Sincronizzato, visto che legge gli attributi
+                try {
                     collProd.insertOne(newProduct);
+                    resp.setStatus(HttpServletResponse.SC_CREATED); //Code 201
+                    resp.setHeader("Location", req.getRequestURL().toString() + '/' + newProduct.getId()); //mostra dove è disponibile il prodotto
+                } catch (MongoException e) {
+                    resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "The database insertion isn't working\n" + e.getMessage());
                 }
-                resp.setStatus(HttpServletResponse.SC_CREATED); //Code 201 //O String normale??
-                resp.setHeader("Location", req.getRequestURL().toString() + '/' + newProduct.getId()); //mostra dove è disponibile il prodotto
             } catch (JSONException e) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "The server was unable to parse the Json object you uploaded");
             }
         } else {
-            resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "POST metod not allowed on single resources"); //Code 405
+            resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "POST method not allowed on single resources"); //Code 405
         }
     }
 
@@ -150,8 +150,7 @@ public class ServletProdotti extends HttpServlet {
         if (requested == null || requested.equals("/")) {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED); //Code 405 https://restfulapi.net/http-methods/#put
         } else if (ObjectId.isValid(requested.split("/")[1])) {
-            //ObjectId key = new ObjectId(requested.split("/")[1]);
-            String key=requested.split("/")[1];
+            String key = requested.split("/")[1];
             StringBuilder received = new StringBuilder();
             String line;
             BufferedReader reader = req.getReader();
@@ -167,11 +166,9 @@ public class ServletProdotti extends HttpServlet {
                         newJsonProduct.getBoolean("disponibile"),
                         newJsonProduct.getInt("minQuantity"));
                 newProduct.setId(key);
-                synchronized (this) { //Da migliorare (tanto codice nel blocco sync), ma non sono riuscito a pensare di meglio
-                    /*if (prodotti.replace(key, newProduct) == null) {
-                        resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che ha richiesto di modificare non esiste"); //Code 404
-                    } else {*/
-                    collProd.findOneAndReplace(eq("_id", key), newProduct);
+                if (collProd.findOneAndReplace(eq("_id", key), newProduct) == null) {
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che ha richiesto di modificare non esiste"); //Code 404
+                } else {
                     resp.setStatus(HttpServletResponse.SC_OK); //Code 200 https://restfulapi.net/http-methods/#put
                 }
             } catch (JSONException e) {
@@ -190,15 +187,11 @@ public class ServletProdotti extends HttpServlet {
         if (requested == null || requested.equals("/")) {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED); //Code 405 https://restfulapi.net/http-methods/
         } else if (ObjectId.isValid(requested.split("/")[1])) {
-            //ObjectId key = new ObjectId(requested.split("/")[1]);
-            String key=requested.split("/")[1];
-            synchronized (this) {
-                /*if (prodotti.remove(key) == null) {
-                    resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che hai richiesto di eliminare non esiste"); //Code 404
-                } else {*/
-                collProd.findOneAndDelete(eq("_id", key));
+            String key = requested.split("/")[1];
+            if (collProd.findOneAndDelete(eq("_id", key)) == null) {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che hai richiesto di eliminare non esiste"); //Code 404
+            } else {
                 resp.setStatus(HttpServletResponse.SC_OK); //Code 200 https://restfulapi.net/http-methods/
-                //}
             }
         } else {
             String errMessage = "Usa /prodotti/productId per eliminare un prodotto esistente";

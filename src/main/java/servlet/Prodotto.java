@@ -15,14 +15,12 @@ public class Prodotto {
     @BsonId
     private String id;
     private String nome;
-    //private Image image;
     private float prezzo;
     private String categoria; //Implementare enum Categoria adattando controlli in doGet ServletProdotti
     private boolean disponibilità;
     private int minQuantity;
     private ArrayList<String> certificazioni;
     private ArrayList<Recensione> recensioni;
-    //private float mediaQP;
 
     public Prodotto() {
         id = new ObjectId().toHexString();
@@ -110,19 +108,6 @@ public class Prodotto {
     public void setMinQuantity(int minQuantity) {
         this.minQuantity = minQuantity;
     }
-
-    /*public float getMediaQP() {
-        if (recensioni.isEmpty()) {
-            this.mediaQP = -1;
-        } else {
-            float sum = 0;
-            for (int i = 0; i < recensioni.size(); i++) {
-                sum += recensioni.get(i).getQualitàPrezzo();
-            }
-            this.mediaQP = sum / recensioni.size();
-        }
-        return mediaQP;
-    }*/
 
     @Override
     public int hashCode() {
