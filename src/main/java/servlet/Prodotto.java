@@ -19,30 +19,27 @@ public class Prodotto {
     private String categoria; //Implementare enum Categoria adattando controlli in doGet ServletProdotti
     private boolean disponibilità;
     private int minQuantity;
+    private int maxQuantity;
     private ArrayList<String> certificazioni;
     private ArrayList<Recensione> recensioni;
 
     public Prodotto() {
         id = new ObjectId().toHexString();
-        certificazioni=new ArrayList<>();
-        recensioni=new ArrayList<>();
+        certificazioni = new ArrayList<>();
+        recensioni = new ArrayList<>();
     }
-    
+
     //@BsonCreator, le annotation sotto non sono usate
-    public Prodotto(@BsonProperty("nome") String nome,
-            @BsonProperty("prezzo") float prezzo,
-            @BsonProperty("categoria") String categoria,
-            @BsonProperty("disponibilità") boolean disponibilità,
-            @BsonProperty("minQuantity") int minQuantity) {
+    public Prodotto(String nome, float prezzo, String categoria, boolean disponibilità, int minQuantity, int maxQuantity) {
         this.id = new ObjectId().toHexString();
         this.nome = nome;
         this.prezzo = prezzo;
         this.categoria = categoria;
         this.disponibilità = disponibilità;
         this.minQuantity = minQuantity;
-        certificazioni=new ArrayList<>();
-        recensioni=new ArrayList<>();
-        //mediaQP = 0;
+        this.maxQuantity = maxQuantity;
+        certificazioni = new ArrayList<>();
+        recensioni = new ArrayList<>();
     }
 
     public String getId() {
@@ -107,6 +104,14 @@ public class Prodotto {
 
     public void setMinQuantity(int minQuantity) {
         this.minQuantity = minQuantity;
+    }
+
+    public int getMaxQuantity() {
+        return maxQuantity;
+    }
+
+    public void setMaxQuantity(int maxQuantity) {
+        this.maxQuantity = maxQuantity;
     }
 
     @Override

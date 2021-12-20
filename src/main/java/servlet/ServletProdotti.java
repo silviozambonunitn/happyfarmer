@@ -11,7 +11,6 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-//import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.annotation.WebServlet;
@@ -68,7 +67,7 @@ public class ServletProdotti extends HttpServlet {
         } else if (neededCategory == null && searchBy != null) {
             //Ritorno i prodotti il cui nome contiene la stringa richiesta, json vuoto nel caso non esistano matches
             JSONArray exportBuf = new JSONArray();
-            MongoCursor<Prodotto> cursore = collProd.find(eq("nome", searchBy)).cursor();
+            MongoCursor<Prodotto> cursore = collProd.find(eq("nome", "{ $regex: /.*" + searchBy + "./, $options: 'i' }")).cursor();
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
             }
@@ -121,13 +120,14 @@ public class ServletProdotti extends HttpServlet {
                 received.append(line);
             }
             try {
-                JSONObject newJsonProduct = new JSONObject(received.toString());
+                JSONObject j = new JSONObject(received.toString());
                 Prodotto newProduct = new Prodotto(
-                        newJsonProduct.getString("nome"),
-                        newJsonProduct.getFloat("prezzo"),
-                        newJsonProduct.getString("categoria"),
-                        newJsonProduct.getBoolean("disponibile"),
-                        newJsonProduct.getInt("minQuantity"));
+                        j.getString("nome"),
+                        j.getFloat("prezzo"),
+                        j.getString("categoria"),
+                        j.getBoolean("disponibile"),
+                        j.getInt("minQuantity"),
+                        j.getInt("maxQuantity"));
                 try {
                     collProd.insertOne(newProduct);
                     resp.setStatus(HttpServletResponse.SC_CREATED); //Code 201
@@ -158,13 +158,14 @@ public class ServletProdotti extends HttpServlet {
                 received.append(line);
             }
             try {
-                JSONObject newJsonProduct = new JSONObject(received.toString());
+                JSONObject j = new JSONObject(received.toString());
                 Prodotto newProduct = new Prodotto(
-                        newJsonProduct.getString("nome"),
-                        newJsonProduct.getFloat("prezzo"),
-                        newJsonProduct.getString("categoria"),
-                        newJsonProduct.getBoolean("disponibile"),
-                        newJsonProduct.getInt("minQuantity"));
+                        j.getString("nome"),
+                        j.getFloat("prezzo"),
+                        j.getString("categoria"),
+                        j.getBoolean("disponibile"),
+                        j.getInt("minQuantity"),
+                        j.getInt("maxQuantity"));
                 newProduct.setId(key);
                 if (collProd.findOneAndReplace(eq("_id", key), newProduct) == null) {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che ha richiesto di modificare non esiste"); //Code 404
