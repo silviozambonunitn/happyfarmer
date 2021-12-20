@@ -201,4 +201,10 @@ public class ServletProdotti extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doOptions(req, resp); //To change body of generated methods, choose Tools | Templates.
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+    }
+
 }
