@@ -67,7 +67,7 @@ public class ServletProdotti extends HttpServlet {
         } else if (neededCategory == null && searchBy != null) {
             //Ritorno i prodotti il cui nome contiene la stringa richiesta, json vuoto nel caso non esistano matches
             JSONArray exportBuf = new JSONArray();
-            MongoCursor<Prodotto> cursore = collProd.find(eq("nome", "{ $regex: /.*" + searchBy + "*./, $options: 'i' }")).cursor();
+            MongoCursor<Prodotto> cursore = collProd.find(eq("nome", searchBy)).cursor();
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
             }
@@ -76,7 +76,7 @@ public class ServletProdotti extends HttpServlet {
         } else if (neededCategory != null && searchBy != null) {
             //Ritorno i prodotti filtrati attraverso entrambi i filtri precendenti
             JSONArray exportBuf = new JSONArray();
-            MongoCursor<Prodotto> cursore = collProd.find(and(eq("nome", "{ $regex: /.*" + searchBy + "*./, $options: 'i' }"), eq("categoria", neededCategory))).cursor();
+            MongoCursor<Prodotto> cursore = collProd.find(and(eq("nome", searchBy), eq("categoria", neededCategory))).cursor();
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
             }
