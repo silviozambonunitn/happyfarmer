@@ -94,9 +94,10 @@ public class ServletProdotti extends HttpServlet {
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (ObjectId.isValid(requested.split("/")[1])) { //Java REGEX ('/' seguito da qualsiasi numero positivo intero lungo quanto si vuole)
             //Fornisco il prodotto richiesto
-            ObjectId key = new ObjectId(requested.split("/")[1]);
+            //ObjectId key = new ObjectId(requested.split("/")[1]);
+            String key=requested.split("/")[1];
             try {
-                JSONObject export = new JSONObject(/*prodotti.get(key)*/collProd.find(eq("_id", key)).first());
+                JSONObject export = new JSONObject(collProd.find(eq("_id", key)).first());
                 out.print(export.toString());
                 resp.setHeader("Content-Type", "application/json;charset=utf-8");
             } catch (NullPointerException e) { //Modificare exception
@@ -149,7 +150,8 @@ public class ServletProdotti extends HttpServlet {
         if (requested == null || requested.equals("/")) {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED); //Code 405 https://restfulapi.net/http-methods/#put
         } else if (ObjectId.isValid(requested.split("/")[1])) {
-            ObjectId key = new ObjectId(requested.split("/")[1]);
+            //ObjectId key = new ObjectId(requested.split("/")[1]);
+            String key=requested.split("/")[1];
             StringBuilder received = new StringBuilder();
             String line;
             BufferedReader reader = req.getReader();
@@ -164,7 +166,7 @@ public class ServletProdotti extends HttpServlet {
                         newJsonProduct.getString("categoria"),
                         newJsonProduct.getBoolean("disponibile"),
                         newJsonProduct.getInt("minQuantity"));
-                newProduct.setId(key.toHexString());
+                newProduct.setId(key);
                 synchronized (this) { //Da migliorare (tanto codice nel blocco sync), ma non sono riuscito a pensare di meglio
                     /*if (prodotti.replace(key, newProduct) == null) {
                         resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che ha richiesto di modificare non esiste"); //Code 404
@@ -188,7 +190,8 @@ public class ServletProdotti extends HttpServlet {
         if (requested == null || requested.equals("/")) {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED); //Code 405 https://restfulapi.net/http-methods/
         } else if (ObjectId.isValid(requested.split("/")[1])) {
-            ObjectId key = new ObjectId(requested.split("/")[1]);
+            //ObjectId key = new ObjectId(requested.split("/")[1]);
+            String key=requested.split("/")[1];
             synchronized (this) {
                 /*if (prodotti.remove(key) == null) {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che hai richiesto di eliminare non esiste"); //Code 404
