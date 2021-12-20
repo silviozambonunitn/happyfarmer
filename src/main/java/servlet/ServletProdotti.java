@@ -112,6 +112,7 @@ public class ServletProdotti extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String requested = req.getPathInfo();
         resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Headers", "Location");
         if (requested == null || requested.equals("/")) {
             StringBuilder received = new StringBuilder();
             String line;
