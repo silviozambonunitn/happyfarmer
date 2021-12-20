@@ -29,8 +29,6 @@ import org.json.JSONArray;
 @WebServlet(name = "ServletProdotti", urlPatterns = "/prodotti/*")
 public class ServletProdotti extends HttpServlet {
 
-    //private HashMap<ObjectId, Prodotto> prodotti;
-    //private long numProd;
     private MongoClient mongoClient;
     private MongoDatabase db;
     private MongoCollection<Prodotto> collProd;
@@ -49,8 +47,6 @@ public class ServletProdotti extends HttpServlet {
         db = mongoClient.getDatabase("happyfarmerdb");
         collProd = db.getCollection("prodotti", Prodotto.class);
         System.out.println("Init eseguito con successo!");
-        //prodotti = new HashMap<>();
-        //numProd = 0;
     }
 
     @Override
@@ -63,13 +59,6 @@ public class ServletProdotti extends HttpServlet {
         if (neededCategory != null && searchBy == null) {
             //Ritorno i prodotti filtrati per la categoria richiesta, json vuoto nel caso non esistano matches
             JSONArray exportBuf = new JSONArray();
-            /*Prodotto prodotto;
-            for (long i = 0; i < numProd; i++) { //Non esiste foreach per Map
-                if ((prodotto = prodotti.get(i)) != null && prodotto.getCategoria().equals(neededCategory)) {
-                    exportBuf.put(prodotto);
-                }
-            }
-             */
             MongoCursor<Prodotto> cursore = collProd.find(eq("categoria", neededCategory)).cursor();
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
@@ -78,13 +67,7 @@ public class ServletProdotti extends HttpServlet {
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (neededCategory == null && searchBy != null) {
             //Ritorno i prodotti il cui nome contiene la stringa richiesta, json vuoto nel caso non esistano matches
-            //Prodotto prodotto;
             JSONArray exportBuf = new JSONArray();
-            /*for (long i = 0; i < numProd; i++) {
-                if ((prodotto = prodotti.get(i)) != null && prodotto.getNome().toLowerCase().contains(searchBy.toLowerCase())) {
-                    exportBuf.put(prodotto);
-                }
-            }*/
             MongoCursor<Prodotto> cursore = collProd.find(eq("nome", searchBy)).cursor();
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
@@ -93,16 +76,7 @@ public class ServletProdotti extends HttpServlet {
             resp.setHeader("Content-Type", "application/json;charset=utf-8");
         } else if (neededCategory != null && searchBy != null) {
             //Ritorno i prodotti filtrati attraverso entrambi i filtri precendenti
-            Prodotto prodotto;
             JSONArray exportBuf = new JSONArray();
-            /*for (long i = 0; i < numProd; i++) {
-                if ((prodotto = prodotti.get(i)) != null) {
-                    if (prodotto.getNome().toLowerCase().contains(searchBy.toLowerCase()) && prodotto.getCategoria().equals(neededCategory)) {
-                        exportBuf.put(prodotto);
-                    }
-                }
-            }
-            out.print(new JSONArray(exportBuf).toString());*/
             MongoCursor<Prodotto> cursore = collProd.find(and(eq("nome", searchBy), eq("categoria", neededCategory))).cursor();
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
@@ -112,10 +86,6 @@ public class ServletProdotti extends HttpServlet {
         } else if (requested == null || requested.equals("/")) {
             //Ritorno tutti i prodotti
             JSONArray exportBuf = new JSONArray();
-            /*for (long i = 0; i < numProd; i++) {
-                export.put(new JSONObject(prodotti.get(i)));
-            }
-            out.print(export.toString());*/
             MongoCursor<Prodotto> cursore = collProd.find().cursor();
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
@@ -160,7 +130,6 @@ public class ServletProdotti extends HttpServlet {
                         newJsonProduct.getBoolean("disponibile"),
                         newJsonProduct.getInt("minQuantity"));
                 synchronized (this) { //Sincronizzato, visto che legge gli attributi
-                    //prodotti.put(newProduct.getId(), newProduct);
                     collProd.insertOne(newProduct);
                 }
                 resp.setStatus(HttpServletResponse.SC_CREATED); //Code 201 //O String normale??
@@ -202,7 +171,6 @@ public class ServletProdotti extends HttpServlet {
                     } else {*/
                     collProd.findOneAndReplace(eq("_id", key), newProduct);
                     resp.setStatus(HttpServletResponse.SC_OK); //Code 200 https://restfulapi.net/http-methods/#put
-                    //}
                 }
             } catch (JSONException e) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "The server was unable to parse the Json object you uploaded");
