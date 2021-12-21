@@ -1,6 +1,6 @@
 package servlet;
 
-import java.util.ArrayList;
+import org.bson.codecs.pojo.annotations.BsonCreator;
 
 /**
  *
@@ -11,11 +11,26 @@ public class Produttore extends User {
     private String ragioneSociale;
     private ContoVirtuale conto;
 
-    //Da appoggio per query db, credo
-    private ArrayList<Ordine> ordini; //Distinguere tra da ritirare e vecchi?
-
+    @BsonCreator
     public Produttore() {
         super();
-        ordini = new ArrayList<>();
+        ragioneSociale = "Initialized!";
+        conto = new ContoVirtuale();
+    }
+
+    public String getRagioneSociale() {
+        return ragioneSociale;
+    }
+
+    public void setRagioneSociale(String ragioneSociale) {
+        this.ragioneSociale = ragioneSociale;
+    }
+
+    public ContoVirtuale getConto() {
+        return conto;
+    }
+
+    public void setConto(ContoVirtuale conto) {
+        this.conto = conto;
     }
 }

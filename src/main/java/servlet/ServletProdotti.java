@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 
 /**
- *
+ * Servlet per gestire retrieve, inserimento, modifica eliminazione di Prodotti
  * @author Silvio
  */
 @WebServlet(name = "ServletProdotti", urlPatterns = "/prodotti/*")
@@ -31,7 +31,7 @@ public class ServletProdotti extends HttpServlet {
 
     private MongoClient mongoClient;
     private MongoDatabase db;
-    private MongoCollection<Prodotto> collProd;
+    private MongoCollection<Prodotto> prodotti;
 
     @Override
     public void init() throws ServletException {
@@ -44,7 +44,7 @@ public class ServletProdotti extends HttpServlet {
                 .build();
         mongoClient = MongoClients.create(clientSettings);
         db = mongoClient.getDatabase("happyfarmerdb");
-        collProd = db.getCollection("prodotti", Prodotto.class);
+        prodotti = db.getCollection("prodotti", Prodotto.class);
         System.out.println("Connessione con MongoDB eseguita con successo!");
     }
 
@@ -58,7 +58,7 @@ public class ServletProdotti extends HttpServlet {
         if (neededCategory != null && searchBy == null) {
             //Ritorno i prodotti filtrati per la categoria richiesta, json vuoto nel caso non esistano matches
             JSONArray exportBuf = new JSONArray();
-            MongoCursor<Prodotto> cursore = collProd.find(eq("categoria", neededCategory)).cursor();
+            MongoCursor<Prodotto> cursore = prodotti.find(eq("categoria", neededCategory)).cursor();
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
             }
@@ -67,7 +67,7 @@ public class ServletProdotti extends HttpServlet {
         } else if (neededCategory == null && searchBy != null) {
             //Ritorno i prodotti il cui nome contiene la stringa richiesta, json vuoto nel caso non esistano matches
             JSONArray exportBuf = new JSONArray();
-            MongoCursor<Prodotto> cursore = collProd.find(eq("nome", searchBy)).cursor();
+            MongoCursor<Prodotto> cursore = prodotti.find(eq("nome", searchBy)).cursor();
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
             }
@@ -76,7 +76,7 @@ public class ServletProdotti extends HttpServlet {
         } else if (neededCategory != null && searchBy != null) {
             //Ritorno i prodotti filtrati attraverso entrambi i filtri precendenti
             JSONArray exportBuf = new JSONArray();
-            MongoCursor<Prodotto> cursore = collProd.find(and(eq("nome", searchBy), eq("categoria", neededCategory))).cursor();
+            MongoCursor<Prodotto> cursore = prodotti.find(and(eq("nome", searchBy), eq("categoria", neededCategory))).cursor();
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
             }
@@ -85,7 +85,7 @@ public class ServletProdotti extends HttpServlet {
         } else if (requested == null || requested.equals("/")) {
             //Ritorno tutti i prodotti
             JSONArray exportBuf = new JSONArray();
-            MongoCursor<Prodotto> cursore = collProd.find().cursor();
+            MongoCursor<Prodotto> cursore = prodotti.find().cursor();
             while (cursore.hasNext()) {
                 exportBuf.put(new JSONObject(cursore.next()));
             }
@@ -95,7 +95,7 @@ public class ServletProdotti extends HttpServlet {
             //Fornisco il prodotto richiesto
             String key = requested.split("/")[1];
             try {
-                out.print(new JSONObject(collProd.find(eq("_id", key)).first()).toString());
+                out.print(new JSONObject(prodotti.find(eq("_id", key)).first()).toString());
                 resp.setHeader("Content-Type", "application/json;charset=utf-8");
             } catch (NullPointerException e) { //Modificare exception
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto richiesto non esiste"); //Code 404
@@ -130,7 +130,7 @@ public class ServletProdotti extends HttpServlet {
                         j.getInt("minQuantity"),
                         j.getInt("maxQuantity"));
                 try {
-                    collProd.insertOne(newProduct);
+                    prodotti.insertOne(newProduct);
                     resp.setStatus(HttpServletResponse.SC_CREATED); //Code 201
                     resp.setHeader("Location", req.getRequestURL().toString() + '/' + newProduct.getId()); //mostra dove è disponibile il prodotto
                 } catch (MongoException e) {
@@ -168,7 +168,7 @@ public class ServletProdotti extends HttpServlet {
                         j.getInt("minQuantity"),
                         j.getInt("maxQuantity"));
                 newProduct.setId(key);
-                if (collProd.findOneAndReplace(eq("_id", key), newProduct) == null) {
+                if (prodotti.findOneAndReplace(eq("_id", key), newProduct) == null) {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che ha richiesto di modificare non esiste"); //Code 404
                 } else {
                     resp.setStatus(HttpServletResponse.SC_OK); //Code 200 https://restfulapi.net/http-methods/#put
@@ -190,7 +190,7 @@ public class ServletProdotti extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED); //Code 405 https://restfulapi.net/http-methods/
         } else if (ObjectId.isValid(requested.split("/")[1])) {
             String key = requested.split("/")[1];
-            if (collProd.findOneAndDelete(eq("_id", key)) == null) {
+            if (prodotti.findOneAndDelete(eq("_id", key)) == null) {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che hai richiesto di eliminare non esiste"); //Code 404
             } else {
                 resp.setStatus(HttpServletResponse.SC_OK); //Code 200 https://restfulapi.net/http-methods/
@@ -203,7 +203,7 @@ public class ServletProdotti extends HttpServlet {
 
     @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doOptions(req, resp); //To change body of generated methods, choose Tools | Templates.
+        super.doOptions(req, resp);
         resp.setHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Headers", "content-type");
     }
