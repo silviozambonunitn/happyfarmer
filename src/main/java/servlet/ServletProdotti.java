@@ -24,6 +24,7 @@ import org.json.JSONArray;
 
 /**
  * Servlet per gestire retrieve, inserimento, modifica eliminazione di Prodotti
+ *
  * @author Silvio
  */
 @WebServlet(name = "ServletProdotti", urlPatterns = "/prodotti/*")
@@ -128,7 +129,8 @@ public class ServletProdotti extends HttpServlet {
                         j.getString("categoria"),
                         j.getBoolean("disponibile"),
                         j.getInt("minQuantity"),
-                        j.getInt("maxQuantity"));
+                        j.getInt("maxQuantity"),
+                        j.getString("produttore"));
                 try {
                     prodotti.insertOne(newProduct);
                     resp.setStatus(HttpServletResponse.SC_CREATED); //Code 201
@@ -166,7 +168,8 @@ public class ServletProdotti extends HttpServlet {
                         j.getString("categoria"),
                         j.getBoolean("disponibile"),
                         j.getInt("minQuantity"),
-                        j.getInt("maxQuantity"));
+                        j.getInt("maxQuantity"),
+                        j.getString("produttore"));
                 newProduct.setId(key);
                 if (prodotti.findOneAndReplace(eq("_id", key), newProduct) == null) {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto che ha richiesto di modificare non esiste"); //Code 404

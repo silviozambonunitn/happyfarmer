@@ -14,6 +14,7 @@ public class Prodotto {
 
     @BsonId
     private String id;
+    private String produttore;
     private String nome;
     private float prezzo;
     private String categoria; //Implementare enum Categoria adattando controlli in doGet ServletProdotti
@@ -29,8 +30,7 @@ public class Prodotto {
         recensioni = new ArrayList<>();
     }
 
-    //@BsonCreator, le annotation sotto non sono usate
-    public Prodotto(String nome, float prezzo, String categoria, boolean disponibilità, int minQuantity, int maxQuantity) {
+    public Prodotto(String nome, float prezzo, String categoria, boolean disponibilità, int minQuantity, int maxQuantity, String produttore) {
         this.id = new ObjectId().toHexString();
         this.nome = nome;
         this.prezzo = prezzo;
@@ -38,6 +38,7 @@ public class Prodotto {
         this.disponibilità = disponibilità;
         this.minQuantity = minQuantity;
         this.maxQuantity = maxQuantity;
+        this.produttore = produttore;
         certificazioni = new ArrayList<>();
         recensioni = new ArrayList<>();
     }
@@ -114,6 +115,14 @@ public class Prodotto {
         this.maxQuantity = maxQuantity;
     }
 
+    public String getProduttore() {
+        return produttore;
+    }
+
+    public void setProduttore(String produttore) {
+        this.produttore = produttore;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -126,25 +135,10 @@ public class Prodotto {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+        try {
+            return this.id.equals(((Prodotto) obj).getId());
+        } catch (ClassCastException e) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Prodotto other = (Prodotto) obj;
-        if (Float.floatToIntBits(this.prezzo) != Float.floatToIntBits(other.prezzo)) {
-            return false;
-        }
-        if (!Objects.equals(this.nome, other.nome)) {
-            return false;
-        }
-        if (!Objects.equals(this.categoria, other.categoria)) {
-            return false;
-        }
-        return true;
     }
 }
