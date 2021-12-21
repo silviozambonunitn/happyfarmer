@@ -60,15 +60,15 @@ public class ServletUtenti extends HttpServlet {
         if (requested == null || requested.equals("/")) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Richiesta malformata: Usa ../utenti/[produttori OR consumatori]/");
         } else {
-            String requests[]=requested.split("/");
+            String requests[] = requested.split("/");
             switch (requests[1]) {
                 case "produttori":
-                    if (requests.length==2) {
+                    if (requests.length == 2) {
                         //Ritorno tutti i produttori
                         JSONArray array = new JSONArray();
                         MongoCursor<Produttore> cursore = produttori.find().cursor();
                         while (cursore.hasNext()) {
-                            array.put(cursore.next());
+                            array.put(new JSONObject(cursore.next()));
                         }
                         out.print(array.toString());
                         resp.setHeader("Content-Type", "application/json;charset=utf-8");
@@ -84,19 +84,19 @@ public class ServletUtenti extends HttpServlet {
                     }
                     break;
                 case "consumatori":
-                    if (requests.length==2) {
+                    if (requests.length == 2) {
                         //Ritorno tutti i consumatori
                         JSONArray array = new JSONArray();
                         MongoCursor<Consumatore> cursore = consumatori.find().cursor();
                         while (cursore.hasNext()) {
-                            array.put(cursore.next());
+                            array.put(new JSONObject(cursore.next()));
                         }
                         out.print(array.toString());
                         resp.setHeader("Content-Type", "application/json;charset=utf-8");
                     } else if (ObjectId.isValid(requests[2])) {
                         //Ritorno il consumatore richiesto
                         try {
-                            out.print(new JSONObject(produttori.find(eq("_id", requests[2])).first()).toString());
+                            out.print(new JSONObject(consumatori.find(eq("_id", requests[2])).first()).toString());
                         } catch (JSONException e) {
                             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving requested resource!");
                         }
@@ -113,17 +113,17 @@ public class ServletUtenti extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "Method not implemented yet");
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "Method not implemented yet");
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "Method not implemented yet");
     }
 
     @Override

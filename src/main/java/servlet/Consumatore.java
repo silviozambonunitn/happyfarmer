@@ -1,6 +1,6 @@
 package servlet;
 
-import java.util.ArrayList;
+import org.bson.codecs.pojo.annotations.BsonCreator;
 
 /**
  *
@@ -8,11 +8,8 @@ import java.util.ArrayList;
  */
 public class Consumatore extends User {
 
-    //Da appoggio per query db, credo
-    private ArrayList<Ordine> ordini; //Distinguere tra da ritirare e vecchi?
-
+    @BsonCreator
     public Consumatore() {
         super();
-        ordini = new ArrayList<>();
     }
 }
