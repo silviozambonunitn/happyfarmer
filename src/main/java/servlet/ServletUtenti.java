@@ -28,7 +28,7 @@ import org.json.JSONObject;
  *
  * @author Silvio
  */
-@WebServlet(name = "ServletUtenti", urlPatterns = "/users/*")
+@WebServlet(name = "ServletUtenti", urlPatterns = "/utenti/*")
 public class ServletUtenti extends HttpServlet {
 
     private MongoClient mongoClient;
@@ -55,15 +55,15 @@ public class ServletUtenti extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
-        String type = req.getPathInfo().split("/")[1];
-        String id = req.getPathInfo().split("/")[2];
+        String requested = req.getPathInfo();
         resp.setHeader("Access-Control-Allow-Origin", "*"); //CORS required
-        if (null == type) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Richiesta malformata: Usa .../[produttori OR consumatori]/..");
+        if (requested == null || requested.equals("/")) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Richiesta malformata: Usa ../utenti/[produttori OR consumatori]/");
         } else {
-            switch (type) {
+            String requests[]=requested.split("/");
+            switch (requests[1]) {
                 case "produttori":
-                    if (id == null) {
+                    if (requests.length==2) {
                         //Ritorno tutti i produttori
                         JSONArray array = new JSONArray();
                         MongoCursor<Produttore> cursore = produttori.find().cursor();
@@ -72,10 +72,10 @@ public class ServletUtenti extends HttpServlet {
                         }
                         out.print(array.toString());
                         resp.setHeader("Content-Type", "application/json;charset=utf-8");
-                    } else if (ObjectId.isValid(id)) {
+                    } else if (ObjectId.isValid(requests[2])) {
                         //Ritorno il produttore richiesto
                         try {
-                            out.print(new JSONObject(produttori.find(eq("_id", id)).first()).toString());
+                            out.print(new JSONObject(produttori.find(eq("_id", requests[2])).first()).toString());
                         } catch (JSONException e) {
                             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving requested resource!");
                         }
@@ -84,7 +84,7 @@ public class ServletUtenti extends HttpServlet {
                     }
                     break;
                 case "consumatori":
-                    if (id == null) {
+                    if (requests.length==2) {
                         //Ritorno tutti i consumatori
                         JSONArray array = new JSONArray();
                         MongoCursor<Consumatore> cursore = consumatori.find().cursor();
@@ -93,10 +93,10 @@ public class ServletUtenti extends HttpServlet {
                         }
                         out.print(array.toString());
                         resp.setHeader("Content-Type", "application/json;charset=utf-8");
-                    } else if (ObjectId.isValid(id)) {
+                    } else if (ObjectId.isValid(requests[2])) {
                         //Ritorno il consumatore richiesto
                         try {
-                            out.print(new JSONObject(produttori.find(eq("_id", id)).first()).toString());
+                            out.print(new JSONObject(produttori.find(eq("_id", requests[2])).first()).toString());
                         } catch (JSONException e) {
                             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving requested resource!");
                         }
