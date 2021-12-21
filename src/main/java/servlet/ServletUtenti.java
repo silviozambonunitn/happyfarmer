@@ -2,12 +2,14 @@ package servlet;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.*;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -113,7 +115,65 @@ public class ServletUtenti extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "Method not implemented yet");
+        String requested = req.getPathInfo();
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Headers", "Location");
+        if (requested.equals("/consumatori") || requested.equals("/consumatori/")) {
+            StringBuilder received = new StringBuilder();
+            String line;
+            BufferedReader reader = req.getReader();
+            while ((line = reader.readLine()) != null) {
+                received.append(line);
+            }
+            try {
+                JSONObject j = new JSONObject(received.toString());
+                Consumatore cons = new Consumatore(
+                        j.getString("nome"),
+                        j.getString("cognome"),
+                        j.getString("email"),
+                        j.getString("dataNascita"),
+                        j.getString("numTelefono"),
+                        j.getString("password"));
+                try {
+                    consumatori.insertOne(cons);
+                    resp.setStatus(HttpServletResponse.SC_CREATED); //Code 201
+                    resp.setHeader("Location", req.getRequestURL().toString() + '/' + cons.getId()); //mostra dove è disponibile il consumatore
+                } catch (MongoException e) {
+                    resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "The database insertion isn't working\n" + e.getMessage());
+                }
+            } catch (JSONException e) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "The server was unable to parse the Json object you uploaded");
+            }
+        } else if (requested.equals("/produttori") || requested.equals("/produttori/")) {
+            StringBuilder received = new StringBuilder();
+            String line;
+            BufferedReader reader = req.getReader();
+            while ((line = reader.readLine()) != null) {
+                received.append(line);
+            }
+            try {
+                JSONObject j = new JSONObject(received.toString());
+                Produttore prod = new Produttore(
+                        j.getString("ragSociale"),
+                        j.getString("nome"),
+                        j.getString("cognome"),
+                        j.getString("email"),
+                        j.getString("dataNascita"),
+                        j.getString("numTelefono"),
+                        j.getString("password"));
+                try {
+                    consumatori.insertOne(prod);
+                    resp.setStatus(HttpServletResponse.SC_CREATED); //Code 201
+                    resp.setHeader("Location", req.getRequestURL().toString() + '/' + prod.getId()); //mostra dove è disponibile il consumatore
+                } catch (MongoException e) {
+                    resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "The database insertion isn't working\n" + e.getMessage());
+                }
+            } catch (JSONException e) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "The server was unable to parse the Json object you uploaded");
+            }
+        } else {
+            resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED); //Code 405
+        }
     }
 
     @Override
