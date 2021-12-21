@@ -5,7 +5,9 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -18,6 +20,9 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -54,25 +59,53 @@ public class ServletUtenti extends HttpServlet {
         String id = req.getPathInfo().split("/")[2];
         resp.setHeader("Access-Control-Allow-Origin", "*"); //CORS required
         if (null == type) {
-            //Richiesta non valida
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Richiesta malformata: Usa .../[produttori OR consumatori]/..");
         } else {
             switch (type) {
                 case "produttori":
                     if (id == null) {
                         //Ritorno tutti i produttori
+                        JSONArray array = new JSONArray();
+                        MongoCursor<Produttore> cursore = produttori.find().cursor();
+                        while (cursore.hasNext()) {
+                            array.put(cursore.next());
+                        }
+                        out.print(array.toString());
+                        resp.setHeader("Content-Type", "application/json;charset=utf-8");
                     } else if (ObjectId.isValid(id)) {
                         //Ritorno il produttore richiesto
+                        try {
+                            out.print(new JSONObject(produttori.find(eq("_id", id)).first()).toString());
+                        } catch (JSONException e) {
+                            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving requested resource!");
+                        }
+                    } else {
+                        resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Id non valido");
                     }
                     break;
                 case "consumatori":
                     if (id == null) {
                         //Ritorno tutti i consumatori
+                        JSONArray array = new JSONArray();
+                        MongoCursor<Consumatore> cursore = consumatori.find().cursor();
+                        while (cursore.hasNext()) {
+                            array.put(cursore.next());
+                        }
+                        out.print(array.toString());
+                        resp.setHeader("Content-Type", "application/json;charset=utf-8");
                     } else if (ObjectId.isValid(id)) {
                         //Ritorno il consumatore richiesto
+                        try {
+                            out.print(new JSONObject(produttori.find(eq("_id", id)).first()).toString());
+                        } catch (JSONException e) {
+                            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving requested resource!");
+                        }
+                    } else {
+                        resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Id non valido");
                     }
                     break;
                 default:
-                    //categoria di utenti richiesta non valida
+                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Categoria di utenti richiesta non valida");
                     break;
             }
         }
