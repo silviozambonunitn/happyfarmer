@@ -162,7 +162,7 @@ public class ServletUtenti extends HttpServlet {
                         j.getString("numTelefono"),
                         j.getString("password"));
                 try {
-                    consumatori.insertOne(prod);
+                    produttori.insertOne(prod);
                     resp.setStatus(HttpServletResponse.SC_CREATED); //Code 201
                     resp.setHeader("Location", req.getRequestURL().toString() + '/' + prod.getId()); //mostra dove è disponibile il consumatore
                 } catch (MongoException e) {
