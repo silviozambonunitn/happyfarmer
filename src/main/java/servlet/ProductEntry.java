@@ -1,7 +1,5 @@
 package servlet;
 
-import java.util.Objects;
-
 /**
  *
  * @author Silvio
@@ -44,10 +42,7 @@ public class ProductEntry {
             return false;
         }
         final ProductEntry other = (ProductEntry) obj;
-        if (!Objects.equals(this.prodotto, other.prodotto)) {
-            return false;
-        }
-        return true;
+        return this.prodotto.equals( other.prodotto);
     }
 
     @Override
