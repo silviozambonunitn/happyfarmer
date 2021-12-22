@@ -92,7 +92,9 @@ public class ServletOrdini extends HttpServlet {
                 JSONObject buff;
                 for (int i = 0; i < jarray.length(); i++) {
                     buff = jarray.getJSONObject(i);
-                    p = new ProductEntry(buff.getString("prodotto"), buff.getInt("quantità"));
+                    String idProd=buff.getString("prodotto");
+                    int qt=buff.getInt("quantità");
+                    p = new ProductEntry(idProd, qt);
                     array.add(p);
                 }
                 Ordine ord = new Ordine(
@@ -109,7 +111,7 @@ public class ServletOrdini extends HttpServlet {
                     resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "The database insertion isn't working\n" + e.getMessage());
                 }
             } catch (JSONException e) {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "The server was unable to parse the Json object you uploaded");
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "The server was unable to parse the Json object you uploaded"+e.getMessage());
             }
         } else {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Usa .../ordini(/) per caricare un ordine");
