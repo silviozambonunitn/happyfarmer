@@ -90,11 +90,11 @@ public class ServletOrdini extends HttpServlet {
                 ArrayList<ProductEntry> array = new ArrayList<>();
                 JSONArray jarray = j.getJSONArray("prodotti");
                 JSONObject buff;
-                for (int i = 0; i < jarray.length(); i++) {
+                /*for (int i = 0; i < jarray.length(); i++) {
                     buff = jarray.getJSONObject(i);
                     p = new ProductEntry(buff.getString("prodotto"), buff.getInt("quantità"));
                     array.add(p);
-                }
+                }*/
                 Ordine ord = new Ordine(
                         j.getString("consumatore"),
                         j.getString("produttore"),
