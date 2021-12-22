@@ -76,10 +76,12 @@ public class ServletUtenti extends HttpServlet {
                         resp.setHeader("Content-Type", "application/json;charset=utf-8");
                     } else if (ObjectId.isValid(requests[2])) {
                         //Ritorno il produttore richiesto
-                        try {
-                            out.print(new JSONObject(produttori.find(eq("_id", requests[2])).first()).toString());
-                        } catch (JSONException e) {
-                            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving requested resource!");
+                        Produttore p = produttori.find(eq("_id", requests[2])).first();
+                        if (p == null) {
+                            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il produttore richiesto non esiste"); //Code 404
+                        } else {
+                            out.print(new JSONObject(p).toString());
+                            resp.setHeader("Content-Type", "application/json;charset=utf-8");
                         }
                     } else {
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Id non valido");
@@ -97,10 +99,12 @@ public class ServletUtenti extends HttpServlet {
                         resp.setHeader("Content-Type", "application/json;charset=utf-8");
                     } else if (ObjectId.isValid(requests[2])) {
                         //Ritorno il consumatore richiesto
-                        try {
-                            out.print(new JSONObject(consumatori.find(eq("_id", requests[2])).first()).toString());
-                        } catch (JSONException e) {
-                            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving requested resource!");
+                        Consumatore p = consumatori.find(eq("_id", requests[2])).first();
+                        if (p == null) {
+                            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il consumatore richiesto non esiste"); //Code 404
+                        } else {
+                            out.print(new JSONObject(p).toString());
+                            resp.setHeader("Content-Type", "application/json;charset=utf-8");
                         }
                     } else {
                         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Id non valido");
@@ -191,5 +195,6 @@ public class ServletUtenti extends HttpServlet {
         super.doOptions(req, resp);
         resp.setHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Headers", "content-type");
+        resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     }
 }
