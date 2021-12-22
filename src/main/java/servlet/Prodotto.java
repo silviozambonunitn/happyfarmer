@@ -87,12 +87,20 @@ public class Prodotto {
         return certificazioni;
     }
 
+    public void setCertificazioni(ArrayList<String> certificazioni) {
+        this.certificazioni = certificazioni;
+    }
+
     public boolean aggiungiCert(String c) {
         return certificazioni.add(c);
     }
 
     public boolean aggiungiRec(Recensione r) {
         return recensioni.add(r);
+    }
+
+    public void setRecensioni(ArrayList<Recensione> recensioni) {
+        this.recensioni = recensioni;
     }
 
     public ArrayList<Recensione> getRecensioni() {
