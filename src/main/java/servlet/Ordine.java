@@ -13,17 +13,25 @@ public class Ordine {
     @BsonId
     private String id;
     private float totale;
-    private PuntoVendita puntoRitiro;
-    //QR code
+    //private PuntoVendita puntoRitiro;
+    //QR code da implementare
     private boolean ritirato;
-    private Consumatore consumatore;
-    private Produttore produttore;
+    private String consumatore;
+    private String produttore;
     private Pagamento pagamento;
     private ArrayList<ProductEntry> prodotti;
 
     public Ordine() {
         id = new ObjectId().toHexString();
         prodotti = new ArrayList<>();
+    }
+
+    public Ordine(String consumatore, String produttore, ArrayList<ProductEntry> prodotti, float totale) {
+        id = new ObjectId().toHexString();
+        this.consumatore = consumatore;
+        this.produttore = produttore;
+        this.prodotti = prodotti;
+        this.totale = totale;
     }
 
     public String getId() {
@@ -34,15 +42,7 @@ public class Ordine {
         this.id = id;
     }
 
-    public float calcolaPrezzo() {
-        int tot = 0;
-        for (int i = 0; i < prodotti.size(); i++) {
-            tot += prodotti.get(i).getProdotto().getPrezzo();
-        }
-        return tot;
-    }
-
-    boolean aggiungiProdotto(Prodotto p, int quantità) {
+    /*boolean aggiungiProdotto(Prodotto p, int quantità) {
         //come gestire la quantità?
         return false;
     }
@@ -57,24 +57,30 @@ public class Ordine {
 
     boolean tentaPagamento() {
         return false;
+    }*/
+    public void setProdotti(ArrayList<ProductEntry> prodotti) {
+        this.prodotti = prodotti;
     }
 
-    public ArrayList<Prodotto> getProdotti() {
-        return null;
+    public ArrayList<ProductEntry> getProdotti() {
+        return prodotti;
+    }
+
+    public void setTotale(float totale) {
+        this.totale = totale;
     }
 
     public float getTotale() {
         return totale;
     }
 
-    public PuntoVendita getPuntoRitiro() {
+    /*public PuntoVendita getPuntoRitiro() {
         return puntoRitiro;
     }
 
     public void setPuntoRitiro(PuntoVendita puntoRitiro) {
         this.puntoRitiro = puntoRitiro;
-    }
-
+    }*/
     public boolean isRitirato() {
         return ritirato;
     }
@@ -83,19 +89,19 @@ public class Ordine {
         this.ritirato = ritirato;
     }
 
-    public Consumatore getConsumatore() {
+    public String getConsumatore() {
         return consumatore;
     }
 
-    public void setConsumatore(Consumatore consumatore) {
+    public void setConsumatore(String consumatore) {
         this.consumatore = consumatore;
     }
 
-    public Produttore getProduttore() {
+    public String getProduttore() {
         return produttore;
     }
 
-    public void setProduttore(Produttore produttore) {
+    public void setProduttore(String produttore) {
         this.produttore = produttore;
     }
 
