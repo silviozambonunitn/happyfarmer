@@ -116,12 +116,14 @@ public class ServletProdotti extends HttpServlet {
         resp.setHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Headers", "Location");
         if (requested == null || requested.equals("/")) {
+            //Lettura input
             StringBuilder received = new StringBuilder();
             String line;
             BufferedReader reader = req.getReader();
             while ((line = reader.readLine()) != null) {
                 received.append(line);
             }
+            //Lettura Json
             try {
                 JSONObject j = new JSONObject(received.toString());
                 Prodotto newProduct = new Prodotto(
@@ -132,6 +134,7 @@ public class ServletProdotti extends HttpServlet {
                         j.getInt("minQuantity"),
                         j.getInt("maxQuantity"),
                         j.getString("produttore"));
+                //Inserimento in DB
                 try {
                     prodotti.insertOne(newProduct);
                     resp.setStatus(HttpServletResponse.SC_CREATED); //Code 201
