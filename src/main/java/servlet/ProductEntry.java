@@ -1,5 +1,7 @@
 package servlet;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+
 /**
  *
  * @author Silvio
@@ -9,6 +11,7 @@ public class ProductEntry {
     private String prodotto;
     private int quantità;
 
+    @BsonCreator
     public ProductEntry() {
     }
 
