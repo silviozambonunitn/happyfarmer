@@ -96,4 +96,30 @@ public class Consumatore {
         this.password = password;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 67 * hash + this.name.hashCode();
+        hash = 67 * hash + this.surname.hashCode();
+        hash = 67 * hash + this.email.hashCode();
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Consumatore other = (Consumatore) obj;
+        if (!this.id.equals(other.id)) {
+            return false;
+        }
+        return true;
+    }
 }
