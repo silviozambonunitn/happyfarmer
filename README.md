@@ -1,5 +1,5 @@
 # Happy Farmer Java API Repository
-![Happy Farmer Logo](happyfarmer_logo_nobackground.png)
+![Happy Farmer Logo](icon.ico)
 ## Restful API
 L'API è scritta in Java, sfruttando le sue servlet. La webapp è hostata su heroku.com linkato con questa repository per il deploy automatico. Le dependencies del progetto sono gestite con Maven.
 ### N.B.
