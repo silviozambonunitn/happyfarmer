@@ -11,17 +11,23 @@ import org.bson.types.ObjectId;
 public class Consumatore {
 
     @BsonId
-    private String id;
+    private String id; //Non uso la mail per facilità di gestione nei parametri url
     private String name;
     private String surname;
-    protected String email;         //Inserire campo di conferma nel modulo, caso doppia registrazione
+    protected String email; //Inserire campo di conferma nel modulo, caso doppia registrazione
     private String birthDate;
     private String phoneNumber;   //Opzionale
-    protected String password;      //Inserire campo di conferma nel modulo. Nel caso doppia registrazione le password devono essere diverse
+    protected String password; //Inserire campo di conferma nel modulo. Nel caso doppia registrazione le password devono essere diverse
 
     @BsonCreator
     public Consumatore() {
         id = new ObjectId().toHexString();
+        name = null;
+        surname = null;
+        email = null;
+        birthDate = null;
+        phoneNumber = null;
+        password = null;
     }
 
     public Consumatore(String name, String surname, String email, String birthDate, String phoneNumber, String password) {
