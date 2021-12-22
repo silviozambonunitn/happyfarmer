@@ -89,9 +89,9 @@ public class ServletOrdini extends HttpServlet {
                 ProductEntry p;
                 ArrayList<ProductEntry> array = new ArrayList<>();
                 JSONArray jarray = j.getJSONArray("prodotti");
-                //JSONObject buff;
+                JSONObject buff;
                 for (int i = 0; i < jarray.length(); i++) {
-                    //buff = jarray.getJSONObject(i);
+                    buff = jarray.getJSONObject(i);
                     p = new ProductEntry("Banane", 10);
                     array.add(p);
                 }
