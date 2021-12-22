@@ -6,19 +6,19 @@ package servlet;
  */
 public class ProductEntry {
 
-    private Prodotto prodotto;
+    private String prodotto;
     private int quantità;
 
-    public ProductEntry(Prodotto prodotto, int quantità) {
+    public ProductEntry(String prodotto, int quantità) {
         this.prodotto = prodotto;
         this.quantità = quantità;
     }
 
-    public Prodotto getProdotto() {
+    public String getProdotto() {
         return prodotto;
     }
 
-    public void setProdotto(Prodotto prodotto) {
+    public void setProdotto(String prodotto) {
         this.prodotto = prodotto;
     }
 
