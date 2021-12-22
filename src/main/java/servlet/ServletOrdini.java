@@ -32,11 +32,11 @@ import org.json.JSONObject;
  */
 @WebServlet(name = "ServletOrdini", urlPatterns = "/ordini/*")
 public class ServletOrdini extends HttpServlet {
-    
+
     private MongoClient mongoClient;
     private MongoDatabase db;
     private MongoCollection<Ordine> ordini;
-    
+
     @Override
     public void init() throws ServletException {
         ConnectionString connectionString = new ConnectionString("mongodb+srv://sz:sz@happyfarmerdb.v8oyl.mongodb.net/test?authSource=admin&replicaSet=atlas-shcncz-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true");
@@ -51,7 +51,7 @@ public class ServletOrdini extends HttpServlet {
         ordini = db.getCollection("ordini", Ordine.class);
         System.out.println("Connessione con MongoDB eseguita con successo!");
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
@@ -69,7 +69,7 @@ public class ServletOrdini extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Usa .../ordini/IdOrdine per accedere ad un ordine");
         }
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String requested = req.getPathInfo();
@@ -93,6 +93,7 @@ public class ServletOrdini extends HttpServlet {
                 for (int i = 0; i < jarray.length(); i++) {
                     buff = jarray.getJSONObject(i);
                     p = new ProductEntry(buff.getString("prodotto"), buff.getInt("quantità"));
+                    array.add(p);
                 }
                 Ordine ord = new Ordine(
                         j.getString("consumatore"),
@@ -114,17 +115,17 @@ public class ServletOrdini extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Usa .../ordini(/) per caricare un ordine");
         }
     }
-    
+
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "Method not implemented yet");
     }
-    
+
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "Method not implemented yet");
     }
-    
+
     @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doOptions(req, resp);
