@@ -170,7 +170,7 @@ public class ServletProdotti extends HttpServlet {
                         j.getString("nome"),
                         j.getFloat("prezzo"),
                         j.getString("categoria"),
-                        j.getBoolean("disponibile"),
+                        j.getBoolean("disponibilità"),
                         j.getInt("minQuantity"),
                         j.getInt("maxQuantity"),
                         j.getString("produttore"));
