@@ -9,6 +9,9 @@ public class ProductEntry {
     private String prodotto;
     private int quantità;
 
+    public ProductEntry() {
+    }
+
     public ProductEntry(String prodotto, int quantità) {
         this.prodotto = prodotto;
         this.quantità = quantità;
