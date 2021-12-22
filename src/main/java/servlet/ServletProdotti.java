@@ -95,11 +95,12 @@ public class ServletProdotti extends HttpServlet {
         } else if (ObjectId.isValid(requested.split("/")[1])) {
             //Fornisco il prodotto richiesto
             String key = requested.split("/")[1];
-            try {
-                out.print(new JSONObject(prodotti.find(eq("_id", key)).first()).toString());
-                resp.setHeader("Content-Type", "application/json;charset=utf-8");
-            } catch (NullPointerException e) { //Modificare exception
+            Prodotto p = prodotti.find(eq("_id", key)).first();
+            if (p == null) {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Il prodotto richiesto non esiste"); //Code 404
+            } else {
+                out.print(new JSONObject(p).toString());
+                resp.setHeader("Content-Type", "application/json;charset=utf-8");
             }
         } else {
             String errMessage = "Si prega di usare /prodotti o /prodotti/ per richiedere tutti i prodotti, /prodotti/idProdotto per richiedere un prodotto,"
@@ -209,7 +210,7 @@ public class ServletProdotti extends HttpServlet {
         super.doOptions(req, resp);
         resp.setHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Headers", "content-type");
-        resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     }
 
 }
