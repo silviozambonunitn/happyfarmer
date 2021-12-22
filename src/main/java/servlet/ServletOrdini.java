@@ -118,12 +118,25 @@ public class ServletOrdini extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "Method not implemented yet");
+        
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "Method not implemented yet");
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        String requested = req.getPathInfo();
+        if (requested == null || requested.equals("/")) {
+            resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        } else if (ObjectId.isValid(requested.split("/")[1])) {
+            if (ordini.findOneAndDelete(eq("_id", requested.split("/")[1])) == null) {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "L'ordine che hai richiesto di eliminare non esiste"); //Code 404
+            } else {
+                resp.setStatus(HttpServletResponse.SC_OK); //Code 200 https://restfulapi.net/http-methods/
+            }
+        } else {
+            String errMessage = "Usa /prodotti/productId per eliminare un ordine esistente";
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, errMessage); //Code 400
+        }
     }
 
     @Override
