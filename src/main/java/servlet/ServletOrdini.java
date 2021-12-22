@@ -92,7 +92,7 @@ public class ServletOrdini extends HttpServlet {
                 JSONObject buff;
                 for (int i = 0; i < jarray.length(); i++) {
                     buff = jarray.getJSONObject(i);
-                    p = new ProductEntry("Banane", 10);
+                    p = new ProductEntry(buff.getString("prodotto"), buff.getInt("quantità"));
                     array.add(p);
                 }
                 Ordine ord = new Ordine(
